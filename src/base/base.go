@@ -181,11 +181,21 @@ func ScoopInstall() {
 	End()
 }
 func ChocoInstall() {
+	var checksudo bool
+	var sudotype string
 	if !IsAdmin {
-		color.Red.Println("Run as administrator.")
-		End()
-		return
-	} else {
+		color.Red.Print("Running without administrator permissions... ")
+		color.Yellow.Println("Checking sudo or gsudo...")
+		checksudo, sudotype = CheckSudo()
+		if checksudo {
+			color.Green.Printf("%vdetected!!!\n", sudotype)
+		}
+		if !checksudo {
+			color.Red.Println("sudo or gsudo not detected.")
+			End()
+			return
+		}
+	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
 	}
 	if ConfigData.Choco == "" {
@@ -195,11 +205,35 @@ func ChocoInstall() {
 	}
 	CheckPackageManagers("choco")
 	fmt.Printf(yellow("Installing with choco ")+"%v\n", ConfigData.Choco)
-	err := sh.Cmd("choco install -y " + ConfigData.Choco)
+	if checksudo {
+		color.Yellow.Println("Using " + sudotype)
+	}
+	command := fmt.Sprintf("%vchoco install -y %v", sudotype, ConfigData.Choco)
+	err := sh.Cmd(command)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 	} else {
 		color.Green.Println("Prosess Completed without errors!!!")
 	}
 	End()
+}
+func Clear() {
+	sh := Sh{PowerShell: true}
+	sh.Cmd("clear")
+}
+
+func CheckSudo() (bool, string) {
+	var err1, err2 bool
+	var sudotype string
+	_, err := sh.Out("gsudo echo ...")
+	if err == nil {
+		err2 = false
+		sudotype = "gsudo "
+	}
+	_, err = sh.Out("sudo echo ...")
+	if err == nil {
+		err1 = true
+		sudotype = "sudo "
+	}
+	return err1 || err2, sudotype
 }

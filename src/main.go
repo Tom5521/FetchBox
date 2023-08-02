@@ -35,7 +35,7 @@ func main() {
 	fmt.Scanln(&option)
 	switch option {
 	case "":
-		sh.Cmd("cls")
+		base.Clear()
 		main()
 	case "0":
 		base.End()
