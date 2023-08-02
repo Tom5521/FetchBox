@@ -17,13 +17,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var red = color.FgRed.Render
-var yellow = color.FgYellow.Render
-
-var Root string = func() string {
-	binpath, _ := filepath.Abs(os.Args[0])
-	return filepath.Dir(binpath)
-}()
+var (
+	red               = color.FgRed.Render
+	bgyellow          = color.BgYellow.Render
+	yellow            = color.FgYellow.Render
+	ConfigData        = getYamldata()
+	Root       string = func() string {
+		binpath, _ := filepath.Abs(os.Args[0])
+		return filepath.Dir(binpath)
+	}()
+)
 
 type Sh struct {
 	PowerShell bool
@@ -32,8 +35,6 @@ type Sh struct {
 	Stdout     bool
 	Stderr     bool
 }
-
-var ConfigData = getYamldata()
 
 func getYamldata() yamlfile {
 	yamldata := yamlfile{}
@@ -106,15 +107,15 @@ var IsAdmin bool = func() bool {
 }()
 
 func CheckPackageManagers(tested string) {
-	var temshell Sh = Sh{
+	var tempshell Sh = Sh{
 		PowerShell: true,
 	}
 	install_choco := func() {
-		temshell.Cmd("Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
+		tempshell.Cmd("Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
 	}
 	install_scoop := func() {
-		temshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
-		temshell.Cmd("irm get.scoop.sh | iex")
+		tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
+		tempshell.Cmd("irm get.scoop.sh | iex")
 	}
 	if strings.Contains(tested, "choco") {
 		color.Yellow.Println("Checking choco...")
@@ -146,7 +147,7 @@ func CheckDir(dir string) bool {
 	}
 }
 func End() {
-	fmt.Println("Press enter to exit...")
+	fmt.Println("Press " + bgyellow("enter ") + "to exit...")
 	fmt.Scanln()
 }
 
@@ -227,6 +228,8 @@ func CheckSudo() (bool, string) {
 		color.Green.Println("gsudo detected!!!")
 		err2 = true
 		sudotype = "gsudo "
+	} else {
+		color.Yellow.Println("gsudo not detected...")
 	}
 	color.Yellow.Println("Checking sudo...")
 	_, err = sh.Out("sudo echo ...")
@@ -234,6 +237,8 @@ func CheckSudo() (bool, string) {
 		color.Green.Println("sudo detected!!!")
 		err1 = true
 		sudotype = "sudo "
+	} else {
+		color.Yellow.Println("sudo not detected...")
 	}
 	return err1 || err2, sudotype
 }
