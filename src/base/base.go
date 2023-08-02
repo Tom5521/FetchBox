@@ -26,12 +26,11 @@ var Root string = func() string {
 }()
 
 type Sh struct {
-	RunAsNormalUser bool
-	PowerShell      bool
-	CustomSt        bool
-	Stdin           bool
-	Stdout          bool
-	Stderr          bool
+	PowerShell bool
+	CustomSt   bool
+	Stdin      bool
+	Stdout     bool
+	Stderr     bool
 }
 
 var ConfigData = getYamldata()
@@ -187,9 +186,6 @@ func ChocoInstall() {
 		color.Red.Print("Running without administrator permissions... ")
 		color.Yellow.Println("Checking sudo or gsudo...")
 		checksudo, sudotype = CheckSudo()
-		if checksudo {
-			color.Green.Printf("%vdetected!!!\n", sudotype)
-		}
 		if !checksudo {
 			color.Red.Println("sudo or gsudo not detected.")
 			End()
@@ -225,13 +221,17 @@ func Clear() {
 func CheckSudo() (bool, string) {
 	var err1, err2 bool
 	var sudotype string
+	color.Yellow.Println("Checking gsudo...")
 	_, err := sh.Out("gsudo echo ...")
 	if err == nil {
-		err2 = false
+		color.Green.Println("gsudo detected!!!")
+		err2 = true
 		sudotype = "gsudo "
 	}
+	color.Yellow.Println("Checking sudo...")
 	_, err = sh.Out("sudo echo ...")
 	if err == nil {
+		color.Green.Println("sudo detected!!!")
 		err1 = true
 		sudotype = "sudo "
 	}
