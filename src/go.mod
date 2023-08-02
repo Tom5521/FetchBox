@@ -1,4 +1,4 @@
-module WinPostInstallTool
+module Windows-package-autoinstaller
 
 go 1.20
 

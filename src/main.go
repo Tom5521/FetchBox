@@ -12,7 +12,7 @@ import (
 
 	"github.com/gookit/color"
 
-	"WinPostInstallTool/base"
+	"Windows-package-autoinstaller/base"
 )
 
 var sh base.Sh
