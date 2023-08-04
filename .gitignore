@@ -1,2 +1,8 @@
 *.exe
 *.yml
+__pycache__
+test.*
+build
+dist
+*.spec
+builds

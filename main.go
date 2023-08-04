@@ -12,18 +12,22 @@ import (
 
 	"github.com/gookit/color"
 
-	"Windows-package-autoinstaller/base"
+	"github.com/Tom5521/Windows-package-autoinstaller/src"
 )
 
-var sh base.Sh
+var sh src.Sh
 
 func main() {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "scoop":
-			base.ScoopInstall()
+			src.ScoopInstall()
 		case "choco":
-			base.ChocoInstall()
+			src.ChocoInstall()
+		case "test":
+			fmt.Println("true")
+		case "newyamlfile":
+			src.NewJsonFile()
 		}
 		return
 	}
@@ -35,14 +39,14 @@ func main() {
 	fmt.Scanln(&option)
 	switch option {
 	case "":
-		base.Clear()
+		src.Clear()
 		main()
 	case "0":
-		base.End()
+		src.End()
 		os.Exit(0)
 	case "1":
-		base.ChocoInstall()
+		src.ChocoInstall()
 	case "2":
-		base.ScoopInstall()
+		src.ScoopInstall()
 	}
 }

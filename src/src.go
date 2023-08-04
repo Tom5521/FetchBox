@@ -4,7 +4,7 @@
  * This project is licenced under the MIT License.
  */
 
-package base
+package src
 
 import (
 	"fmt"
@@ -27,14 +27,6 @@ var (
 		return filepath.Dir(binpath)
 	}()
 )
-
-type Sh struct {
-	PowerShell bool
-	CustomSt   bool
-	Stdin      bool
-	Stdout     bool
-	Stderr     bool
-}
 
 func getYamldata() yamlfile {
 	yamldata := yamlfile{}
@@ -63,6 +55,13 @@ func NewJsonFile() {
 type yamlfile struct {
 	Scoop string `yaml:"scoop"`
 	Choco string `yaml:"choco"`
+}
+type Sh struct {
+	PowerShell bool
+	CustomSt   bool
+	Stdin      bool
+	Stdout     bool
+	Stderr     bool
 }
 
 func (sh Sh) Cmd(input string) error {
@@ -147,6 +146,11 @@ func CheckDir(dir string) bool {
 	}
 }
 func End() {
+	if len(os.Args) > 2 {
+		if os.Args[2] == "noend" {
+			return
+		}
+	}
 	fmt.Println("Press " + bgyellow("enter ") + "to exit...")
 	fmt.Scanln()
 }
