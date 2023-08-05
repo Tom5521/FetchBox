@@ -18,6 +18,7 @@ import (
 )
 
 var (
+	Version string = "1.1"
 	red               = color.FgRed.Render
 	bgyellow          = color.BgYellow.Render
 	yellow            = color.FgYellow.Render
