@@ -32,24 +32,45 @@ func getYamldata() yamlfile {
 	yamldata := yamlfile{}
 	if !CheckDir("packages.yml") {
 		fmt.Printf(red("packages.yml not found...") + yellow("Creating a new one...\n"))
-		NewJsonFile()
+		NewYamlFile()
 		if CheckDir("packages.yml") {
 			color.Green.Println("packages.yml file created!!!")
 		}
 		End()
 		os.Exit(0)
 	}
-	file, _ := os.ReadFile("packages.yml")
-	yaml.Unmarshal(file, &yamldata)
+	file, err := os.ReadFile("packages.yml")
+	if err != nil {
+		color.Red.Println("Error reading packages.yml")
+	}
+	err = yaml.Unmarshal(file, &yamldata)
+	if err != nil {
+		color.Red.Println("Error Unmarshalling the data")
+	}
 	return yamldata
 }
 
-func NewJsonFile() {
-	jsonfile := yamlfile{}
-	file, _ := os.Create("packages.yml")
+func NewYamlFile() {
+	yamlstruct := yamlfile{}
+	file, err := os.Create("packages.yml")
+	if err != nil {
+		color.Red.Println("Error creating packages.yml")
+		End()
+		return
+	}
 	defer file.Close()
-	data, _ := yaml.Marshal(jsonfile)
-	file.WriteString(string(data))
+	data, err := yaml.Marshal(yamlstruct)
+	if err != nil {
+		color.Red.Println("Error Marshalling packages file")
+		End()
+		return
+	}
+	_, err = file.WriteString(string(data))
+	if err != nil {
+		color.Red.Println("Error writing the data in the new yml file")
+		End()
+		return
+	}
 }
 
 type yamlfile struct {
@@ -110,11 +131,23 @@ func CheckPackageManagers(tested string) {
 		PowerShell: true,
 	}
 	install_choco := func() {
-		tempshell.Cmd("Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
+		err := tempshell.Cmd(
+			"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))",
+		)
+		if err != nil {
+			color.Red.Println("Error installing choco")
+			End()
+			return
+		}
 	}
 	install_scoop := func() {
-		tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
-		tempshell.Cmd("irm get.scoop.sh | iex")
+		err1 := tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
+		err2 := tempshell.Cmd("irm get.scoop.sh | iex")
+		if err1 != nil || err2 != nil {
+			color.Red.Println("Error installing scoop")
+			End()
+			return
+		}
 	}
 	if strings.Contains(tested, "choco") {
 		color.Yellow.Println("Checking choco...")
@@ -138,6 +171,7 @@ func CheckPackageManagers(tested string) {
 		}
 	}
 }
+
 func CheckDir(dir string) bool {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		return false
@@ -145,13 +179,14 @@ func CheckDir(dir string) bool {
 		return true
 	}
 }
+
 func End() {
 	if len(os.Args) > 2 {
 		if os.Args[2] == "noend" {
 			return
 		}
 	}
-	fmt.Println("Press " + bgyellow("enter ") + "to exit...")
+	fmt.Println("Press " + bgyellow("enter") + " to exit...")
 	fmt.Scanln()
 }
 
@@ -184,9 +219,12 @@ func ScoopInstall() {
 	}
 	End()
 }
+
 func ChocoInstall() {
-	var checksudo bool
-	var sudotype string
+	var (
+		checksudo bool
+		sudotype  string
+	)
 	if !IsAdmin {
 		color.Red.Print("Running without administrator permissions... ")
 		color.Yellow.Println("Checking sudo or gsudo...")
@@ -218,9 +256,12 @@ func ChocoInstall() {
 	}
 	End()
 }
+
 func Clear() {
-	sh := Sh{PowerShell: true}
-	sh.Cmd("clear")
+	err := sh.Cmd("cls")
+	if err != nil {
+		color.Red.Println("Error Cleaning the terminal")
+	}
 }
 
 func CheckSudo() (bool, string) {

@@ -54,6 +54,12 @@ class Sh:
         out, _ = process.communicate()
         return out.decode(), process.returncode
 
+bincheck,_ = Sh(PowerShell=True).Out("ls")
+
+if "main.exe" not in bincheck:
+    print("Binary File not found...")
+    exit()
+
 if len(sys.argv) > 1:
     if sys.argv[1] == "term":
         Sh().Cmd(".\\main.exe")
@@ -88,8 +94,6 @@ window = tk.Tk()
 window.title("Windows Package AutoInstaller")
 window.resizable(False,False)
 window.minsize(width=344, height=327)
-
-#red_font = tk.font.Font(family="Arial", size=12, weight="bold", underline=True, foreground="red")
 
 
 def save_text():

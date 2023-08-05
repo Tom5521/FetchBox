@@ -15,7 +15,7 @@ import (
 	"github.com/Tom5521/Windows-package-autoinstaller/src"
 )
 
-var sh src.Sh
+
 
 func main() {
 	if len(os.Args) > 1 {
@@ -27,15 +27,20 @@ func main() {
 		case "test":
 			fmt.Println("true")
 		case "newyamlfile":
-			src.NewJsonFile()
+			src.NewYamlFile()
 		}
 		return
 	}
-	sh.Cmd("cls")
+	src.Clear()
 	var option string
 	red := color.FgRed.Render
 	yellow := color.FgYellow.Render
-	fmt.Printf("Select an option\n1:Install Choco packages%v\n2:Install Scoop packages%v\n0:%v\n:", yellow("(requires administrator permissions)"), yellow("(requires not to use administrator)"), red("Exit"))
+	fmt.Printf(
+		"Select an option\n1:Install Choco packages%v\n2:Install Scoop packages%v\n0:%v\n:",
+		yellow("(requires administrator permissions)"),
+		yellow("(requires not to use administrator)"),
+		red("Exit"),
+	)
 	fmt.Scanln(&option)
 	switch option {
 	case "":
