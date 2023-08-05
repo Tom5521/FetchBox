@@ -29,7 +29,7 @@ func main() {
 		case "newyamlfile":
 			src.NewYamlFile()
 		case "version":
-			fmt.Println("Windows-package-autoinstaller v",src.Version,"\nUnder the MIT License")
+			fmt.Println("Windows-package-autoinstaller v",src.Version,"\nCreated by Angel(Tom5521)\nUnder the MIT License")
 		}
 		return
 	}
