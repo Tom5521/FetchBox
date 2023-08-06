@@ -9,16 +9,16 @@ package src
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
+	"github.com/Tom5521/MyGolangTools/commands"
 	"github.com/gookit/color"
 	"gopkg.in/yaml.v3"
 )
 
 var (
-	Version string = "1.1"
+	Version    string = "1.2"
 	red               = color.FgRed.Render
 	bgyellow          = color.BgYellow.Render
 	yellow            = color.FgYellow.Render
@@ -78,47 +78,9 @@ type yamlfile struct {
 	Scoop string `yaml:"scoop"`
 	Choco string `yaml:"choco"`
 }
-type Sh struct {
-	PowerShell bool
-	CustomSt   bool
-	Stdin      bool
-	Stdout     bool
-	Stderr     bool
-}
-
-func (sh Sh) Cmd(input string) error {
-	var shell string = "cmd"
-	if sh.PowerShell {
-		shell = "PowerShell.exe"
-	}
-	cmd := exec.Command(shell, "/C", input)
-	if sh.CustomSt {
-		if sh.Stderr {
-			cmd.Stderr = os.Stderr
-		}
-		if sh.Stdin {
-			cmd.Stdin = os.Stdin
-		}
-		if sh.Stdout {
-			cmd.Stdout = os.Stdout
-		}
-	} else {
-		cmd.Stderr = os.Stderr
-		cmd.Stdin = os.Stdin
-		cmd.Stdout = os.Stdout
-	}
-	err := cmd.Run()
-	return err
-}
-
-func (sh Sh) Out(input string) (string, error) {
-	cmd := exec.Command("cmd", "/C", input)
-	out, err := cmd.Output()
-	return string(out), err
-}
 
 var IsAdmin bool = func() bool {
-	sh := Sh{}
+	sh := commands.Sh{}
 	_, err := sh.Out("net session")
 	if err != nil {
 		return false
@@ -128,9 +90,8 @@ var IsAdmin bool = func() bool {
 }()
 
 func CheckPackageManagers(tested string) {
-	var tempshell Sh = Sh{
-		PowerShell: true,
-	}
+	tempshell := commands.Sh{}
+	tempshell.Windows.PowerShell = true
 	install_choco := func() {
 		err := tempshell.Cmd(
 			"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))",
@@ -191,7 +152,7 @@ func End() {
 	fmt.Scanln()
 }
 
-var sh Sh = Sh{}
+var sh commands.Sh = commands.Sh{}
 
 func ScoopInstall() {
 	CheckPackageManagers("scoop")

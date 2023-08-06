@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/Tom5521/MyGolangTools v0.0.0-20230806053540-1d169699a019 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 )
