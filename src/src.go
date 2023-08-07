@@ -102,15 +102,19 @@ func CheckPackageManagers(tested string) {
 			End()
 			return
 		}
+		color.Yellow.Println("Choco is installed! Restart the program!")
 	}
 	install_scoop := func() {
-		err1 := tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
+		err1 := tempshell.Cmd("Set-Exe*cutionPolicy RemoteSigned -Scope CurrentUser")
 		err2 := tempshell.Cmd("irm get.scoop.sh | iex")
+		ScoopBucketInstall("extras")
 		if err1 != nil || err2 != nil {
 			color.Red.Println("Error installing scoop")
 			End()
 			return
 		}
+		color.Yellow.Println("Scoop is installed! Restart the program.")
+		End()
 	}
 	if strings.Contains(tested, "choco") {
 		color.Yellow.Println("Checking choco...")
@@ -156,6 +160,24 @@ func End() {
 
 var sh commands.Sh = commands.Sh{}
 
+func ScoopBucketInstall(bucket string) {
+	if _, check := sh.Out("git --version"); check != nil {
+		color.Yellow.Println("Git is not installed... Installing git...")
+		err := sh.Cmd("scoop install git")
+		if err != nil {
+			color.Red.Println("Error installing git...")
+			End()
+			return
+		}
+		color.Green.Println("Git Installed!")
+	}
+	color.Yellow.Printf("Adding %v bucket...", bucket)
+	err := sh.Cmd(fmt.Sprintf("scoop bucket add %v", bucket))
+	if err != nil {
+		color.Red.Printf("Error adding %v bucket", bucket)
+	}
+	color.Green.Printf("%v bucket added!", bucket)
+}
 func ScoopInstall() {
 	if ConfigData.Scoop == "" {
 		color.Red.Println("No package for scoop written in packages.yml")
@@ -174,7 +196,9 @@ func ScoopInstall() {
 			return
 		}
 	}
-
+	if strings.Contains(ConfigData.Scoop, "np") {
+		ScoopBucketInstall("nonportable")
+	}
 	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", ConfigData.Scoop)
 	err := sh.Cmd("scoop install " + ConfigData.Scoop)
 	if err != nil {
