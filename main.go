@@ -10,12 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gookit/color"
-
 	"github.com/Tom5521/Windows-package-autoinstaller/src"
 )
-
-
 
 func main() {
 	if len(os.Args) > 1 {
@@ -29,19 +25,17 @@ func main() {
 		case "newyamlfile":
 			src.NewYamlFile()
 		case "version":
-			fmt.Println("Windows-package-autoinstaller v",src.Version,"\nCreated by Angel(Tom5521)\nUnder the MIT License")
+			fmt.Println("Windows-package-autoinstaller v"+src.Version, "\nCreated by "+src.Yellow("Angel(Tom5521)")+"\nUnder the "+src.Red("MIT")+" License")
 		}
 		return
 	}
 	src.Clear()
 	var option string
-	red := color.FgRed.Render
-	yellow := color.FgYellow.Render
 	fmt.Printf(
 		"Select an option\n1:Install Choco packages%v\n2:Install Scoop packages%v\n0:%v\n:",
-		yellow("(requires administrator permissions)"),
-		yellow("(requires not to use administrator)"),
-		red("Exit"),
+		src.Yellow("(requires administrator permissions)"),
+		src.Yellow("(requires not to use administrator)"),
+		src.Red("Exit"),
 	)
 	fmt.Scanln(&option)
 	switch option {

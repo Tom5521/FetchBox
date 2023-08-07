@@ -18,10 +18,10 @@ import (
 )
 
 var (
-	Version    string = "1.2"
-	red               = color.FgRed.Render
+	Version    string = "1.3"
+	Red               = color.FgRed.Render
 	bgyellow          = color.BgYellow.Render
-	yellow            = color.FgYellow.Render
+	Yellow            = color.FgYellow.Render
 	ConfigData        = getYamldata()
 	Root       string = func() string {
 		binpath, _ := filepath.Abs(os.Args[0])
@@ -32,21 +32,22 @@ var (
 func getYamldata() yamlfile {
 	yamldata := yamlfile{}
 	if !CheckDir("packages.yml") {
-		fmt.Printf(red("packages.yml not found...") + yellow("Creating a new one...\n"))
+		fmt.Printf(Red("packages.yml not found...") + Yellow("Creating a new one...\n"))
 		NewYamlFile()
 		if CheckDir("packages.yml") {
 			color.Green.Println("packages.yml file created!!!")
 		}
-		End()
-		os.Exit(0)
+		return getYamldata()
 	}
 	file, err := os.ReadFile("packages.yml")
 	if err != nil {
 		color.Red.Println("Error reading packages.yml")
+		End()
 	}
 	err = yaml.Unmarshal(file, &yamldata)
 	if err != nil {
 		color.Red.Println("Error Unmarshalling the data")
+		End()
 	}
 	return yamldata
 }
@@ -115,7 +116,7 @@ func CheckPackageManagers(tested string) {
 		color.Yellow.Println("Checking choco...")
 		_, err := sh.Out("choco --version")
 		if err != nil {
-			fmt.Printf("%v... %v...\n", red("Choco not detected"), yellow("Trying to install choco"))
+			fmt.Printf("%v... %v...\n", Red("Choco not detected"), Yellow("Trying to install choco"))
 			install_choco()
 		} else {
 			color.Green.Println("Choco is Installed!")
@@ -126,7 +127,7 @@ func CheckPackageManagers(tested string) {
 		_, err := sh.Out("scoop --version")
 		if err != nil {
 
-			fmt.Printf("%v... %v...\n", red("Scoop not detected"), yellow("Trying to install Scoop"))
+			fmt.Printf("%v... %v...\n", Red("Scoop not detected"), Yellow("Trying to install Scoop"))
 			install_scoop()
 		} else {
 			color.Green.Println("Scoop is Installed!")
@@ -145,6 +146,7 @@ func CheckDir(dir string) bool {
 func End() {
 	if len(os.Args) > 2 {
 		if os.Args[2] == "noend" {
+			os.Exit(0)
 			return
 		}
 	}
@@ -155,6 +157,11 @@ func End() {
 var sh commands.Sh = commands.Sh{}
 
 func ScoopInstall() {
+	if ConfigData.Scoop == "" {
+		color.Red.Println("No package for scoop written in packages.yml")
+		End()
+		return
+	}
 	CheckPackageManagers("scoop")
 	if IsAdmin {
 		var option string
@@ -167,12 +174,8 @@ func ScoopInstall() {
 			return
 		}
 	}
-	if ConfigData.Scoop == "" {
-		color.Red.Println("No package for scoop written in packages.yml")
-		End()
-		return
-	}
-	fmt.Printf(yellow("Installing with scoop ")+"%v\n", ConfigData.Scoop)
+
+	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", ConfigData.Scoop)
 	err := sh.Cmd("scoop install " + ConfigData.Scoop)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
@@ -187,6 +190,13 @@ func ChocoInstall() {
 		checksudo bool
 		sudotype  string
 	)
+
+	if ConfigData.Choco == "" {
+		color.Red.Println("No package for choco written in packages.yml")
+		End()
+		return
+	}
+
 	if !IsAdmin {
 		color.Red.Print("Running without administrator permissions... ")
 		color.Yellow.Println("Checking sudo or gsudo...")
@@ -199,13 +209,8 @@ func ChocoInstall() {
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
 	}
-	if ConfigData.Choco == "" {
-		color.Red.Println("No package for choco written in packages.yml")
-		End()
-		return
-	}
 	CheckPackageManagers("choco")
-	fmt.Printf(yellow("Installing with choco ")+"%v\n", ConfigData.Choco)
+	fmt.Printf(Yellow("Installing with choco ")+"%v\n", ConfigData.Choco)
 	if checksudo {
 		color.Yellow.Println("Using " + sudotype)
 	}
@@ -220,7 +225,9 @@ func ChocoInstall() {
 }
 
 func Clear() {
-	err := sh.Cmd("cls")
+	tempcmd := commands.Sh{}
+	tempcmd.Windows.PowerShell = true
+	err := tempcmd.Cmd("clear")
 	if err != nil {
 		color.Red.Println("Error Cleaning the terminal")
 	}
