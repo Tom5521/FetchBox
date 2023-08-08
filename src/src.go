@@ -161,6 +161,7 @@ func End() {
 var sh commands.Sh = commands.Sh{}
 
 func ScoopBucketInstall(bucket string) {
+	CheckPackageManagers("scoop")
 	if _, check := sh.Out("git --version"); check != nil {
 		color.Yellow.Println("Git is not installed... Installing git...")
 		err := sh.Cmd("scoop install git")
