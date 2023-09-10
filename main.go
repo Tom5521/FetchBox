@@ -10,29 +10,40 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Tom5521/Windows-package-autoinstaller/graph"
 	"github.com/Tom5521/Windows-package-autoinstaller/src"
 )
 
 func main() {
 	if len(os.Args) > 1 {
-		switch os.Args[1] {
-		case "scoop":
-			src.ScoopInstall()
-		case "choco":
-			src.ChocoInstall()
-		case "test":
-			fmt.Println("true")
-		case "newyamlfile":
-			src.NewYamlFile()
-		case "version":
-			fmt.Println("Windows-package-autoinstaller v"+src.Version, "\nCreated by "+src.Yellow("Angel(Tom5521)")+"\nUnder the "+src.Red("MIT")+" License")
-		case "addCustomBuckets":
-			if len(os.Args) >= 3 {
-				src.ScoopBucketInstall(os.Args[2])
-			}
-		}
+		TermMode()
 		return
 	}
+	graph.Init()
+}
+
+func TermMode() {
+	switch os.Args[1] {
+	case "tui":
+		TUIMode()
+	case "scoop":
+		src.ScoopInstall()
+	case "choco":
+		src.ChocoInstall()
+	case "test":
+		fmt.Println("true")
+	case "newyamlfile":
+		src.NewYamlFile()
+	case "version":
+		fmt.Println("Windows-package-autoinstaller v"+src.Version, "\nCreated by "+src.Yellow("Angel(Tom5521)")+"\nUnder the "+src.Red("MIT")+" License")
+	case "addCustomBuckets":
+		if len(os.Args) >= 3 {
+			src.ScoopBucketInstall(os.Args[2])
+		}
+	}
+}
+
+func TUIMode() {
 	src.Clear()
 	var option string
 	fmt.Printf(
@@ -45,7 +56,7 @@ func main() {
 	switch option {
 	case "":
 		src.Clear()
-		main()
+		TUIMode()
 	case "0":
 		src.End()
 		os.Exit(0)
