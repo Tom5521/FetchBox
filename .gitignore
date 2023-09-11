@@ -7,3 +7,6 @@ dist
 *.spec
 builds
 Windows-package-autoinstaller
+fyne-cross
+fyne_metadata_init.go
+main
