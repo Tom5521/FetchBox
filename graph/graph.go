@@ -2,10 +2,12 @@ package graph
 
 import (
 	"fmt"
+	"image/color"
 	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/Windows-package-autoinstaller/src"
@@ -33,8 +35,12 @@ func Init() {
 
 	label := widget.NewLabel("Select any option")
 
-	installChocoPackBtn := widget.NewButton("Install Choco packages", src.ChocoInstall)
-	installScoopPackBtn := widget.NewButton("Install Scoop Packages", src.ScoopInstall)
+	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
+		ChocoInstall(app, editedTextChoco.Text)
+	})
+	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
+		ScoopInstall(app, editedTextScoop.Text)
+	})
 
 	content := container.NewVBox(
 		chocoLabel,
@@ -79,4 +85,90 @@ func getYmlData() map[string]interface{} {
 		}
 	}
 	return yamlData
+}
+
+func ChocoInstall(app fyne.App, editedTextChoco string) {
+	if editedTextChoco == "" || editedTextChoco == "<nil>" {
+		errwindow := app.NewWindow("Error")
+		errwindow.Resize(fyne.NewSize(282, 111))
+		errwindow.SetFixedSize(true)
+		warnLabel := canvas.NewText("Choco package list is null!", color.White)
+		warnLabel.TextSize = 25
+		warnLabel.TextStyle.Bold = true
+		warnLabel.Alignment = fyne.TextAlignCenter
+		acceptButton := widget.NewButton("Accept", func() {
+			errwindow.Close()
+		})
+		content := container.NewVBox(
+			warnLabel,
+			acceptButton,
+		)
+		errwindow.SetContent(content)
+		errwindow.Show()
+	} else {
+		window := app.NewWindow("Installing choco packages")
+		window.Resize(fyne.NewSize(400, 70))
+		window.SetFixedSize(true)
+		infinite := widget.NewProgressBarInfinite()
+		acpBT := widget.NewButton("Continue", func() {
+			window.Close()
+		})
+		acpBT.Disable()
+		go func() {
+			src.ChocoInstall()
+			infinite.Stop()
+			window.SetTitle("Completed.")
+			acpBT.Enable()
+		}()
+		window.Close()
+		content := container.NewVBox(
+			infinite,
+			acpBT,
+		)
+		window.SetContent(content)
+		window.Show()
+	}
+}
+
+func ScoopInstall(app fyne.App, editedTextScoop string) {
+	if editedTextScoop == "" || editedTextScoop == "<nil>" {
+		errwindow := app.NewWindow("Error")
+		errwindow.Resize(fyne.NewSize(282, 111))
+		errwindow.SetFixedSize(true)
+		warnLabel := canvas.NewText("Scoop package list is null!", color.White)
+		warnLabel.TextSize = 25
+		warnLabel.TextStyle.Bold = true
+		warnLabel.Alignment = fyne.TextAlignCenter
+		acceptButton := widget.NewButton("Accept", func() {
+			errwindow.Close()
+		})
+		content := container.NewVBox(
+			warnLabel,
+			acceptButton,
+		)
+		errwindow.SetContent(content)
+		errwindow.Show()
+	} else {
+		window := app.NewWindow("Installing scoop packages")
+		window.Resize(fyne.NewSize(400, 70))
+		window.SetFixedSize(true)
+		infinite := widget.NewProgressBarInfinite()
+		acpBT := widget.NewButton("Continue", func() {
+			window.Close()
+		})
+		acpBT.Disable()
+		go func() {
+			src.ScoopInstall()
+			infinite.Stop()
+			window.SetTitle("Completed.")
+			acpBT.Enable()
+		}()
+		window.Close()
+		content := container.NewVBox(
+			infinite,
+			acpBT,
+		)
+		window.SetContent(content)
+		window.Show()
+	}
 }

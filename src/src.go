@@ -18,12 +18,11 @@ import (
 )
 
 var (
-	Version    string = "2.0"
-	Red               = color.FgRed.Render
-	bgyellow          = color.BgYellow.Render
-	Yellow            = color.FgYellow.Render
-	ConfigData        = getYamldata()
-	Root       string = func() string {
+	Version  string = "2.0"
+	Red             = color.FgRed.Render
+	bgyellow        = color.BgYellow.Render
+	Yellow          = color.FgYellow.Render
+	Root     string = func() string {
 		binpath, _ := filepath.Abs(os.Args[0])
 		return filepath.Dir(binpath)
 	}()
@@ -148,14 +147,7 @@ func CheckDir(dir string) bool {
 }
 
 func End() {
-	if len(os.Args) > 2 {
-		if os.Args[2] == "noend" {
-			os.Exit(0)
-			return
-		}
-	}
-	fmt.Println("Press " + bgyellow("enter") + " to exit...")
-	fmt.Scanln()
+	fmt.Println("Process Completed.")
 }
 
 var sh commands.Sh = commands.Sh{}
@@ -180,7 +172,8 @@ func ScoopBucketInstall(bucket string) {
 	color.Green.Printf("%v bucket added!", bucket)
 }
 func ScoopInstall() {
-	if ConfigData.Scoop == "" {
+	data := getYamldata()
+	if data.Scoop == "" {
 		color.Red.Println("No package for scoop written in packages.yml")
 		End()
 		return
@@ -197,11 +190,11 @@ func ScoopInstall() {
 			return
 		}
 	}
-	if strings.Contains(ConfigData.Scoop, "np") {
+	if strings.Contains(data.Scoop, "np") {
 		ScoopBucketInstall("nonportable")
 	}
-	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", ConfigData.Scoop)
-	err := sh.Cmd("scoop install " + ConfigData.Scoop)
+	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", data.Scoop)
+	err := sh.Cmd("scoop install " + data.Scoop)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 	} else {
@@ -214,9 +207,10 @@ func ChocoInstall() {
 	var (
 		checksudo bool
 		sudotype  string
+		data      = getYamldata()
 	)
 
-	if ConfigData.Choco == "" {
+	if data.Choco == "" {
 		color.Red.Println("No package for choco written in packages.yml")
 		End()
 		return
@@ -235,11 +229,11 @@ func ChocoInstall() {
 		color.Yellow.Println("Running as administrator")
 	}
 	CheckPackageManagers("choco")
-	fmt.Printf(Yellow("Installing with choco ")+"%v\n", ConfigData.Choco)
+	fmt.Printf(Yellow("Installing with choco ")+"%v\n", data.Choco)
 	if checksudo {
 		color.Yellow.Println("Using " + sudotype)
 	}
-	command := fmt.Sprintf("%vchoco install -y %v", sudotype, ConfigData.Choco)
+	command := fmt.Sprintf("%vchoco install -y %v", sudotype, data.Choco)
 	err := sh.Cmd(command)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
