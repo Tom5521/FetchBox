@@ -1,5 +1,7 @@
 @echo off
 
-go build -o "InstallApps.exe" main.go
+set FYNE_THEME=dark
+
+fyne package -os windows --src . --exe WPA.exe
 
 pause

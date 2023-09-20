@@ -10,3 +10,8 @@ Windows-package-autoinstaller
 fyne-cross
 fyne_metadata_init.go
 main
+tmp-pkg
+Windows-package-autoinstaller.wasm
+Windows-package-autoinstaller.tar.xz
+WPA.tar.x
+WPA.tar.xz
