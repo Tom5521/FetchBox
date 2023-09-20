@@ -81,8 +81,7 @@ type yamlfile struct {
 }
 
 var IsAdmin bool = func() bool {
-	sh := commands.Sh{}
-	_, err := sh.Out("net session")
+	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
 	if err != nil {
 		return false
 	} else {
