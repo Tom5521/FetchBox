@@ -35,7 +35,10 @@ func TermMode() {
 	case "newyamlfile":
 		src.NewYamlFile()
 	case "version":
-		fmt.Println("Windows-package-autoinstaller v"+src.Version, "\nCreated by "+src.Yellow("Angel(Tom5521)")+"\nUnder the "+src.Red("MIT")+" License")
+		fmt.Println(
+			"Windows-package-autoinstaller v"+src.Version,
+			"\nCreated by "+src.Yellow("Angel(Tom5521)")+"\nUnder the "+src.Red("MIT")+" License",
+		)
 	case "addCustomBuckets":
 		if len(os.Args) >= 3 {
 			src.ScoopBucketInstall(os.Args[2])

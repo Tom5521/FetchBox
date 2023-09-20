@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/Tom5521/MyGolangTools/commands"
@@ -22,8 +23,9 @@ var (
 	Version string = "2.0"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
-	Yellow        = color.FgYellow.Render
-	Root   string = func() string {
+	Yellow         = color.FgYellow.Render
+	linuxCH        = CheckOS()
+	Root    string = func() string {
 		binpath, _ := filepath.Abs(os.Args[0])
 		return filepath.Dir(binpath)
 	}()
@@ -50,6 +52,14 @@ func getYamldata() yamlfile {
 		End()
 	}
 	return yamldata
+}
+
+func CheckOS() error {
+	if runtime.GOOS == "linux" {
+		return errors.New("You're on linux")
+	} else {
+		return nil
+	}
 }
 
 func NewYamlFile() {
@@ -173,10 +183,13 @@ func ScoopBucketInstall(bucket string) {
 }
 func ScoopInstall() error {
 	data := getYamldata()
+	if linuxCH != nil {
+		return linuxCH
+	}
 	if data.Scoop == "" {
 		color.Red.Println("No package for scoop written in packages.yml")
 		End()
-		return errors.New("No package for scoop written in packages.yml")
+		return errors.New("no package for scoop written in packages.yml")
 	}
 	CheckPackageManagers("scoop")
 	if IsAdmin {
@@ -210,10 +223,11 @@ func ChocoInstall() error {
 		sudotype  string
 		data      = getYamldata()
 	)
-
+	if linuxCH != nil {
+		return linuxCH
+	}
 	if data.Choco == "" {
 		color.Red.Println("No package for choco written in packages.yml")
-		End()
 		return errors.New("No package for choco written in packages.yml")
 	}
 
@@ -255,8 +269,10 @@ func Clear() {
 }
 
 func CheckSudo() (bool, string) {
-	var err1, err2 bool
-	var sudotype string
+	var (
+		err1, err2 bool
+		sudotype   string
+	)
 	color.Yellow.Println("Checking gsudo...")
 	_, err := sh.Out("gsudo echo ...")
 	if err == nil {

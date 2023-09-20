@@ -18,6 +18,7 @@ func Init() {
 	app := app.New()
 	window := app.NewWindow("Windows Package AutoInstaller")
 	window.Resize(fyne.NewSize(344, 327))
+	window.SetMaster()
 
 	yamlData := getYmlData()
 
@@ -118,10 +119,14 @@ func ChocoInstall(app fyne.App, editedTextChoco string) {
 		})
 		acpBT.Disable()
 		go func() {
-			core.ChocoInstall()
-			infinite.Stop()
-			window.SetTitle("Completed.")
-			acpBT.Enable()
+			err := core.ChocoInstall()
+			if err != nil {
+
+			} else {
+				infinite.Stop()
+				window.SetTitle("Completed.")
+				acpBT.Enable()
+			}
 		}()
 		window.Close()
 		content := container.NewVBox(
@@ -163,11 +168,13 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 		go func() {
 			err := core.ScoopInstall()
 			if err != nil {
-				scoopErrWin(app, err)
+				window.SetTitle("Completed with errors")
+				ErrWin(app, err, window)
+			} else {
+				infinite.Stop()
+				window.SetTitle("Completed.")
+				acpBT.Enable()
 			}
-			infinite.Stop()
-			window.SetTitle("Completed.")
-			acpBT.Enable()
 		}()
 		window.Close()
 		content := container.NewVBox(
@@ -179,13 +186,16 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 	}
 }
 
-func scoopErrWin(app fyne.App, err error) {
+func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	window := app.NewWindow("Error")
-	window.Resize(fyne.NewSize(100, 200))
+	window.Resize(fyne.NewSize(436, 50))
 	window.SetFixedSize(true)
 	errlabel := widget.NewLabel(err.Error())
+	errlabel.TextStyle.Bold = true
+	errlabel.Alignment = fyne.TextAlignCenter
 	acceptButton := widget.NewButton("Accept", func() {
 		window.Close()
+		clWindow.Close()
 	})
 
 	content := container.NewVBox(
@@ -193,6 +203,7 @@ func scoopErrWin(app fyne.App, err error) {
 		acceptButton,
 	)
 	window.SetContent(content)
+	window.SetMainMenu(window.MainMenu())
 	window.Show()
 
 }
