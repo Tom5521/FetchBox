@@ -7,6 +7,7 @@
 package src
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -18,11 +19,11 @@ import (
 )
 
 var (
-	Version  string = "2.0"
-	Red             = color.FgRed.Render
-	bgyellow        = color.BgYellow.Render
-	Yellow          = color.FgYellow.Render
-	Root     string = func() string {
+	Version string = "2.0"
+	Red            = color.FgRed.Render
+	//bgyellow        = color.BgYellow.Render
+	Yellow        = color.FgYellow.Render
+	Root   string = func() string {
 		binpath, _ := filepath.Abs(os.Args[0])
 		return filepath.Dir(binpath)
 	}()
@@ -171,12 +172,12 @@ func ScoopBucketInstall(bucket string) {
 	}
 	color.Green.Printf("%v bucket added!", bucket)
 }
-func ScoopInstall() {
+func ScoopInstall() error {
 	data := getYamldata()
 	if data.Scoop == "" {
 		color.Red.Println("No package for scoop written in packages.yml")
 		End()
-		return
+		return errors.New("No package for scoop written in packages.yml")
 	}
 	CheckPackageManagers("scoop")
 	if IsAdmin {
@@ -187,7 +188,7 @@ func ScoopInstall() {
 		if option != "Y" {
 			color.Red.Println("Scoop will not run with administrator permissions.")
 			End()
-			return
+			return nil
 		}
 	}
 	if strings.Contains(data.Scoop, "np") {
@@ -197,13 +198,14 @@ func ScoopInstall() {
 	err := sh.Cmd("scoop install " + data.Scoop)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
+		return err
 	} else {
 		color.Green.Println("Prosess Completed without errors!!!")
+		return nil
 	}
-	End()
 }
 
-func ChocoInstall() {
+func ChocoInstall() error {
 	var (
 		checksudo bool
 		sudotype  string
@@ -213,7 +215,7 @@ func ChocoInstall() {
 	if data.Choco == "" {
 		color.Red.Println("No package for choco written in packages.yml")
 		End()
-		return
+		return errors.New("No package for choco written in packages.yml")
 	}
 
 	if !IsAdmin {
@@ -223,7 +225,7 @@ func ChocoInstall() {
 		if !checksudo {
 			color.Red.Println("sudo or gsudo not detected.")
 			End()
-			return
+			return errors.New("sudo or gsudo not detected.")
 		}
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
@@ -237,10 +239,11 @@ func ChocoInstall() {
 	err := sh.Cmd(command)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
+		return err
 	} else {
 		color.Green.Println("Prosess Completed without errors!!!")
+		return nil
 	}
-	End()
 }
 
 func Clear() {

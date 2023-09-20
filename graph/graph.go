@@ -158,7 +158,10 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 		})
 		acpBT.Disable()
 		go func() {
-			src.ScoopInstall()
+			err := src.ScoopInstall()
+			if err != nil {
+				scoopErrWin(app, err)
+			}
 			infinite.Stop()
 			window.SetTitle("Completed.")
 			acpBT.Enable()
@@ -171,4 +174,22 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 		window.SetContent(content)
 		window.Show()
 	}
+}
+
+func scoopErrWin(app fyne.App, err error) {
+	window := app.NewWindow("Error")
+	window.Resize(fyne.NewSize(100, 200))
+	window.SetFixedSize(true)
+	errlabel := widget.NewLabel(err.Error())
+	acceptButton := widget.NewButton("Accept", func() {
+		window.Close()
+	})
+
+	content := container.NewVBox(
+		errlabel,
+		acceptButton,
+	)
+	window.SetContent(content)
+	window.Show()
+
 }
