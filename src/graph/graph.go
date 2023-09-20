@@ -10,7 +10,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/Windows-package-autoinstaller/src"
+	"github.com/Tom5521/Windows-package-autoinstaller/src/core"
 	"gopkg.in/yaml.v3"
 )
 
@@ -22,10 +22,12 @@ func Init() {
 	yamlData := getYmlData()
 
 	chocoLabel := widget.NewLabel("Choco packages to install:")
+	chocoLabel.TextStyle.Bold = true
 	editedTextChoco := widget.NewMultiLineEntry()
 	editedTextChoco.SetText(fmt.Sprintf("%v", yamlData["choco"]))
 
 	scoopLabel := widget.NewLabel("Scoop packages to install:")
+	scoopLabel.TextStyle.Bold = true
 	editedTextScoop := widget.NewMultiLineEntry()
 	editedTextScoop.SetText(fmt.Sprintf("%v", yamlData["scoop"]))
 
@@ -34,6 +36,7 @@ func Init() {
 	})
 
 	label := widget.NewLabel("Select any option")
+	label.TextStyle.Italic = true
 
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
 		ChocoInstall(app, editedTextChoco.Text)
@@ -115,7 +118,7 @@ func ChocoInstall(app fyne.App, editedTextChoco string) {
 		})
 		acpBT.Disable()
 		go func() {
-			src.ChocoInstall()
+			core.ChocoInstall()
 			infinite.Stop()
 			window.SetTitle("Completed.")
 			acpBT.Enable()
@@ -158,7 +161,7 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 		})
 		acpBT.Disable()
 		go func() {
-			err := src.ScoopInstall()
+			err := core.ScoopInstall()
 			if err != nil {
 				scoopErrWin(app, err)
 			}
