@@ -8,4 +8,4 @@ if [ ! -d "builds" ]; then
   mkdir builds
 fi
 
-sudo mv ./fyne-cross/bin/windows-amd64/Windows-package-autoinstaller.exe ./builds/WPA.exe
+cp ./fyne-cross/bin/windows-amd64/WPA.exe ./builds/WPA.exe
