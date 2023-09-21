@@ -121,7 +121,9 @@ func ChocoInstall(app fyne.App, editedTextChoco string) {
 		go func() {
 			err := core.ChocoInstall()
 			if err != nil {
-
+				infinite.Stop()
+				window.SetTitle("Completed with errors.")
+				ErrWin(app, err, window)
 			} else {
 				infinite.Stop()
 				window.SetTitle("Completed.")
@@ -169,6 +171,7 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 			err := core.ScoopInstall()
 			if err != nil {
 				window.SetTitle("Completed with errors")
+				infinite.Stop()
 				ErrWin(app, err, window)
 			} else {
 				infinite.Stop()

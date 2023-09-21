@@ -91,12 +91,8 @@ type yamlfile struct {
 }
 
 var IsAdmin bool = func() bool {
-	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
+	elevated := windows.GetCurrentProcessToken().IsElevated()
+	return elevated
 }()
 
 func CheckPackageManagers(tested string) {
