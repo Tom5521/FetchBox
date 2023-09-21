@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"errors"
 	"fmt"
 	"image/color"
 	"os"
@@ -40,6 +41,11 @@ func Init() {
 	label.TextStyle.Italic = true
 
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
+		err := core.CheckSudo_External()
+		if err != nil {
+			ErrWin(app, errors.New("Sudo not detected!\nRestart the program with administrator permissions"), nil)
+			return
+		}
 		ChocoInstall(app, editedTextChoco.Text)
 	})
 	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
@@ -198,7 +204,9 @@ func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	errlabel.Alignment = fyne.TextAlignCenter
 	acceptButton := widget.NewButton("Accept", func() {
 		window.Close()
-		clWindow.Close()
+		if clWindow != nil {
+			clWindow.Close()
+		}
 	})
 
 	content := container.NewVBox(
