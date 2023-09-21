@@ -119,7 +119,7 @@ func ChocoInstall(app fyne.App, editedTextChoco string) {
 		})
 		acpBT.Disable()
 		go func() {
-			err := core.ChocoInstall()
+			err := core.ChocoPkgInstall()
 			if err != nil {
 				infinite.Stop()
 				window.SetTitle("Completed with errors.")
@@ -168,7 +168,7 @@ func ScoopInstall(app fyne.App, editedTextScoop string) {
 		})
 		acpBT.Disable()
 		go func() {
-			err := core.ScoopInstall()
+			err := core.ScoopPkgInstall()
 			if err != nil {
 				window.SetTitle("Completed with errors")
 				infinite.Stop()

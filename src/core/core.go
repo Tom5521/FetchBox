@@ -91,58 +91,13 @@ type yamlfile struct {
 }
 
 var IsAdmin bool = func() bool {
-	elevated := windows.GetCurrentProcessToken().IsElevated()
-	return elevated
+	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
 }()
-
-func CheckPackageManagers(tested string) {
-	tempshell := commands.Sh{}
-	tempshell.Windows.PowerShell = true
-	install_choco := func() {
-		err := tempshell.Cmd(
-			"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))",
-		)
-		if err != nil {
-			color.Red.Println("Error installing choco")
-			End()
-			return
-		}
-		color.Yellow.Println("Choco is installed! Restart the program!")
-	}
-	install_scoop := func() {
-		err1 := tempshell.Cmd("Set-Exe*cutionPolicy RemoteSigned -Scope CurrentUser")
-		err2 := tempshell.Cmd("irm get.scoop.sh | iex")
-		ScoopBucketInstall("extras")
-		if err1 != nil || err2 != nil {
-			color.Red.Println("Error installing scoop")
-			End()
-			return
-		}
-		color.Yellow.Println("Scoop is installed! Restart the program.")
-		End()
-	}
-	if strings.Contains(tested, "choco") {
-		color.Yellow.Println("Checking choco...")
-		_, err := sh.Out("choco --version")
-		if err != nil {
-			fmt.Printf("%v... %v...\n", Red("Choco not detected"), Yellow("Trying to install choco"))
-			install_choco()
-		} else {
-			color.Green.Println("Choco is Installed!")
-		}
-	}
-	if strings.Contains(tested, "scoop") {
-		color.Yellow.Println("Checking Scoop...")
-		_, err := sh.Out("scoop --version")
-		if err != nil {
-
-			fmt.Printf("%v... %v...\n", Red("Scoop not detected"), Yellow("Trying to install Scoop"))
-			install_scoop()
-		} else {
-			color.Green.Println("Scoop is Installed!")
-		}
-	}
-}
 
 func CheckDir(dir string) bool {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
@@ -159,7 +114,6 @@ func End() {
 var sh commands.Sh = commands.Sh{}
 
 func ScoopBucketInstall(bucket string) {
-	CheckPackageManagers("scoop")
 	if _, check := sh.Out("git --version"); check != nil {
 		color.Yellow.Println("Git is not installed... Installing git...")
 		err := sh.Cmd("scoop install git")
@@ -177,7 +131,7 @@ func ScoopBucketInstall(bucket string) {
 	}
 	color.Green.Printf("%v bucket added!", bucket)
 }
-func ScoopInstall() error {
+func ScoopPkgInstall() error {
 	data := getYamldata()
 	if linuxCH != nil {
 		return linuxCH
@@ -187,17 +141,14 @@ func ScoopInstall() error {
 		End()
 		return errors.New("no package for scoop written in packages.yml")
 	}
-	CheckPackageManagers("scoop")
-	if IsAdmin {
-		var option string
-		color.Yellow.Println("You really want to run scoop with administrator permissions? y/N")
-		fmt.Scanln(&option)
-		option = strings.ToUpper(option)
-		if option != "Y" {
-			color.Red.Println("Scoop will not run with administrator permissions.")
-			End()
-			return nil
+	if check := CheckScoop(); !check {
+		err := InstallScoop()
+		if err != nil {
+			return err
 		}
+	}
+	if IsAdmin {
+		return errors.New("Scoop must be run without administrator permissions")
 	}
 	if strings.Contains(data.Scoop, "np") {
 		ScoopBucketInstall("nonportable")
@@ -213,7 +164,7 @@ func ScoopInstall() error {
 	}
 }
 
-func ChocoInstall() error {
+func ChocoPkgInstall() error {
 	var (
 		checksudo bool
 		sudotype  string
@@ -239,7 +190,12 @@ func ChocoInstall() error {
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
 	}
-	CheckPackageManagers("choco")
+	if check := CheckChoco(); !check {
+		err := InstallChoco()
+		if err != nil {
+			return err
+		}
+	}
 	fmt.Printf(Yellow("Installing with choco ")+"%v\n", data.Choco)
 	if checksudo {
 		color.Yellow.Println("Using " + sudotype)
@@ -288,4 +244,47 @@ func CheckSudo() (bool, string) {
 		color.Yellow.Println("sudo not detected...")
 	}
 	return err1 || err2, sudotype
+}
+
+//Install pkgmanagers functions
+
+func InstallScoop() error {
+	tempshell := sh
+	tempshell.Windows.PowerShell = true
+	err1 := tempshell.Cmd("Set-Exe*cutionPolicy RemoteSigned -Scope CurrentUser")
+	err2 := tempshell.Cmd("irm get.scoop.sh | iex")
+	ScoopBucketInstall("extras")
+	if err1 != nil || err2 != nil {
+		return errors.New("Error Installing scoop")
+	}
+	return nil
+}
+
+func InstallChoco() error {
+	tempshell := sh
+	tempshell.Windows.PowerShell = true
+	err := tempshell.Cmd(
+		"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))",
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Check if the pkg managers exists
+func CheckScoop() bool {
+	_, err := sh.Out("scoop --version")
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+func CheckChoco() bool {
+	_, err := sh.Out("choco --version")
+	if err != nil {
+		return false
+	}
+	return true
 }

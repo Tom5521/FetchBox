@@ -24,12 +24,10 @@ func main() {
 
 func TermMode() {
 	switch os.Args[1] {
-	case "tui":
-		TUIMode()
 	case "scoop":
-		src.ScoopInstall()
+		src.ScoopPkgInstall()
 	case "choco":
-		src.ChocoInstall()
+		src.ChocoPkgInstall()
 	case "test":
 		fmt.Println("true")
 	case "newyamlfile":
@@ -43,29 +41,5 @@ func TermMode() {
 		if len(os.Args) >= 3 {
 			src.ScoopBucketInstall(os.Args[2])
 		}
-	}
-}
-
-func TUIMode() {
-	src.Clear()
-	var option string
-	fmt.Printf(
-		"Select an option\n1:Install Choco packages%v\n2:Install Scoop packages%v\n0:%v\n:",
-		src.Yellow("(requires administrator permissions)"),
-		src.Yellow("(requires not to use administrator)"),
-		src.Red("Exit"),
-	)
-	fmt.Scanln(&option)
-	switch option {
-	case "":
-		src.Clear()
-		TUIMode()
-	case "0":
-		src.End()
-		os.Exit(0)
-	case "1":
-		src.ChocoInstall()
-	case "2":
-		src.ScoopInstall()
 	}
 }
