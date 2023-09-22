@@ -3,12 +3,10 @@ package graph
 import (
 	"errors"
 	"fmt"
-	"image/color"
 	"os"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/Tom5521/Windows-package-autoinstaller/src/core"
@@ -41,15 +39,23 @@ func Init() {
 	label.TextStyle.Italic = true
 
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
+		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" {
+			ErrWin(app, errors.New("Choco package list is empty"), nil)
+			return
+		}
 		err := core.CheckSudo_External()
 		if err != nil {
 			ErrWin(app, errors.New("Sudo not detected!\nRestart the program with administrator permissions"), nil)
 			return
 		}
-		ChocoInstall(app, editedTextChoco.Text)
+		ChocoInstall(app)
 	})
 	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
-		ScoopInstall(app, editedTextScoop.Text)
+		if editedTextScoop.Text == "" || editedTextScoop.Text == "<nil>" {
+			ErrWin(app, errors.New("Scoop package list is empty"), nil)
+			return
+		}
+		ScoopInstall(app)
 	})
 
 	content := container.NewVBox(
@@ -97,107 +103,71 @@ func getYmlData() map[string]interface{} {
 	return yamlData
 }
 
-func ChocoInstall(app fyne.App, editedTextChoco string) {
-	if editedTextChoco == "" || editedTextChoco == "<nil>" {
-		errwindow := app.NewWindow("Error")
-		errwindow.Resize(fyne.NewSize(282, 111))
-		errwindow.SetFixedSize(true)
-		warnLabel := canvas.NewText("Choco package list is null!", color.White)
-		warnLabel.TextSize = 25
-		warnLabel.TextStyle.Bold = true
-		warnLabel.Alignment = fyne.TextAlignCenter
-		acceptButton := widget.NewButton("Accept", func() {
-			errwindow.Close()
-		})
-		content := container.NewVBox(
-			warnLabel,
-			acceptButton,
-		)
-		errwindow.SetContent(content)
-		errwindow.Show()
-	} else {
-		window := app.NewWindow("Installing choco packages")
-		window.Resize(fyne.NewSize(400, 70))
-		window.SetFixedSize(true)
-		infinite := widget.NewProgressBarInfinite()
-		acpBT := widget.NewButton("Continue", func() {
-			window.Close()
-		})
-		acpBT.Disable()
-		go func() {
-			err := core.ChocoPkgInstall()
-			if err != nil {
-				infinite.Stop()
-				window.SetTitle("Completed with errors.")
-				ErrWin(app, err, window)
-			} else {
-				infinite.Stop()
-				window.SetTitle("Completed.")
-				acpBT.Enable()
-			}
-		}()
+func ChocoInstall(app fyne.App) {
+	window := app.NewWindow("Installing choco packages")
+	window.Resize(fyne.NewSize(400, 70))
+	window.SetFixedSize(true)
+	infinite := widget.NewProgressBarInfinite()
+	acpBT := widget.NewButton("Continue", func() {
 		window.Close()
-		content := container.NewVBox(
-			infinite,
-			acpBT,
-		)
-		window.SetContent(content)
-		window.Show()
-	}
+	})
+	acpBT.Disable()
+	go func() {
+		err := core.ChocoPkgInstall()
+		if err != nil {
+			infinite.Stop()
+			window.SetTitle("Completed with errors.")
+			ErrWin(app, err, window)
+		} else {
+			infinite.Stop()
+			window.SetTitle("Completed.")
+			acpBT.Enable()
+		}
+	}()
+	window.Close()
+	content := container.NewVBox(
+		infinite,
+		acpBT,
+	)
+	window.SetContent(content)
+	window.Show()
+
 }
 
-func ScoopInstall(app fyne.App, editedTextScoop string) {
-	if editedTextScoop == "" || editedTextScoop == "<nil>" {
-		errwindow := app.NewWindow("Error")
-		errwindow.Resize(fyne.NewSize(282, 111))
-		errwindow.SetFixedSize(true)
-		warnLabel := canvas.NewText("Scoop package list is null!", color.White)
-		warnLabel.TextSize = 25
-		warnLabel.TextStyle.Bold = true
-		warnLabel.Alignment = fyne.TextAlignCenter
-		acceptButton := widget.NewButton("Accept", func() {
-			errwindow.Close()
-		})
-		content := container.NewVBox(
-			warnLabel,
-			acceptButton,
-		)
-		errwindow.SetContent(content)
-		errwindow.Show()
-	} else {
-		window := app.NewWindow("Installing scoop packages")
-		window.Resize(fyne.NewSize(400, 70))
-		window.SetFixedSize(true)
-		infinite := widget.NewProgressBarInfinite()
-		acpBT := widget.NewButton("Continue", func() {
-			window.Close()
-		})
-		acpBT.Disable()
-		go func() {
-			err := core.ScoopPkgInstall()
-			if err != nil {
-				window.SetTitle("Completed with errors")
-				infinite.Stop()
-				ErrWin(app, err, window)
-			} else {
-				infinite.Stop()
-				window.SetTitle("Completed.")
-				acpBT.Enable()
-			}
-		}()
+func ScoopInstall(app fyne.App) {
+	window := app.NewWindow("Installing scoop packages")
+	window.Resize(fyne.NewSize(400, 70))
+	window.SetFixedSize(true)
+	infinite := widget.NewProgressBarInfinite()
+	acpBT := widget.NewButton("Continue", func() {
 		window.Close()
-		content := container.NewVBox(
-			infinite,
-			acpBT,
-		)
-		window.SetContent(content)
-		window.Show()
-	}
+	})
+	acpBT.Disable()
+	go func() {
+		err := core.ScoopPkgInstall()
+		if err != nil {
+			window.SetTitle("Completed with errors")
+			infinite.Stop()
+			ErrWin(app, err, window)
+		} else {
+			infinite.Stop()
+			window.SetTitle("Completed.")
+			acpBT.Enable()
+		}
+	}()
+	window.Close()
+	content := container.NewVBox(
+		infinite,
+		acpBT,
+	)
+	window.SetContent(content)
+	window.Show()
+
 }
 
 func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	window := app.NewWindow("Error")
-	window.Resize(fyne.NewSize(436, 50))
+	window.Resize(fyne.NewSize(400, 50))
 	window.SetFixedSize(true)
 	errlabel := widget.NewLabel(err.Error())
 	errlabel.TextStyle.Bold = true
