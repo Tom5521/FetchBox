@@ -226,7 +226,7 @@ func CheckSudo() (bool, string) {
 		sudotype   string
 	)
 	color.Yellow.Println("Checking gsudo...")
-	_, err := sh.Out("gsudo net session")
+	_, err := sh.Out("gsudo -v")
 	if err == nil {
 		color.Green.Println("gsudo detected!!!")
 		err2 = true
@@ -235,7 +235,7 @@ func CheckSudo() (bool, string) {
 		color.Yellow.Println("gsudo not detected...")
 	}
 	color.Yellow.Println("Checking sudo...")
-	_, err = sh.Out("sudo net session")
+	_, err = sh.Out("sudo /?")
 	if err == nil {
 		color.Green.Println("sudo detected!!!")
 		err1 = true
