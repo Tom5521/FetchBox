@@ -43,10 +43,12 @@ func Init() {
 			ErrWin(app, errors.New("Choco package list is empty"), nil)
 			return
 		}
-		err := core.CheckSudo_External()
-		if err != nil {
-			ErrWin(app, errors.New("Sudo not detected!\nRestart the program with administrator permissions"), nil)
-			return
+		if !core.IsAdmin {
+			err := core.CheckSudo_External()
+			if err != nil {
+				ErrWin(app, errors.New("Sudo not detected!\nRestart the program with administrator permissions"), nil)
+				return
+			}
 		}
 		ChocoInstall(app)
 	})
