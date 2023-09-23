@@ -25,9 +25,15 @@ func main() {
 func TermMode() {
 	switch os.Args[1] {
 	case "scoop":
-		core.ScoopPkgInstall()
+		err := core.ScoopPkgInstall()	
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	case "choco":
-		core.ChocoPkgInstall()
+		err := core.ChocoPkgInstall()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	case "newyamlfile":
 		core.NewYamlFile() // Create a new yaml file
 	case "version":
