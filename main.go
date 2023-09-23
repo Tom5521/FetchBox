@@ -16,7 +16,7 @@ import (
 
 func main() {
 	if len(os.Args) > 1 {
-		TermMode()
+		TermMode() // Check the cmd args
 		return
 	}
 	graph.Init() // Initialize the graphical mode
