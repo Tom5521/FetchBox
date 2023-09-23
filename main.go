@@ -29,7 +29,7 @@ func TermMode() {
 	case "choco":
 		core.ChocoPkgInstall()
 	case "newyamlfile":
-		core.NewYamlFile()
+		core.NewYamlFile() // Create a new yaml file
 	case "version":
 		fmt.Println(
 			"Windows-package-autoinstaller v"+core.Version,
