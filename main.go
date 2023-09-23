@@ -19,7 +19,7 @@ func main() {
 		TermMode()
 		return
 	}
-	graph.Init()
+	graph.Init() // Initialize the graphical mode
 }
 
 func TermMode() {
