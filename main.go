@@ -28,8 +28,6 @@ func TermMode() {
 		core.ScoopPkgInstall()
 	case "choco":
 		core.ChocoPkgInstall()
-	case "test":
-		fmt.Println("true")
 	case "newyamlfile":
 		core.NewYamlFile()
 	case "version":
