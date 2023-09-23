@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	Version string = "2.0"
+	Version string = "2.0.3"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
@@ -30,7 +30,7 @@ var (
 		binpath, _ := filepath.Abs(os.Args[0])
 		return filepath.Dir(binpath)
 	}()
-	yamlFile = `
+	STRyamlFile = `
 choco: ""
 scoop: ""
 `
@@ -68,7 +68,7 @@ func CheckOS() error {
 }
 
 func NewYamlFile() {
-	err := file.ReWriteFile("packages.yml", yamlFile)
+	err := file.ReWriteFile("packages.yml", STRyamlFile)
 	if err != nil {
 		color.Red.Println("Error writing the data in the new yml file")
 		return
@@ -202,9 +202,8 @@ func ChocoPkgInstall() error {
 }
 
 func Clear() {
-	tempcmd := commands.Sh{}
-	tempcmd.Windows.PowerShell = true
-	err := tempcmd.Cmd("clear")
+	tempcmd := sh
+	err := tempcmd.Cmd("cls")
 	if err != nil {
 		color.Red.Println("Error Cleaning the terminal")
 	}

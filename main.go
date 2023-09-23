@@ -25,7 +25,7 @@ func main() {
 func TermMode() {
 	switch os.Args[1] {
 	case "scoop":
-		err := core.ScoopPkgInstall()	
+		err := core.ScoopPkgInstall()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
