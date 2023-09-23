@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/Tom5521/MyGolangTools/commands"
+	"github.com/Tom5521/MyGolangTools/file"
 	"github.com/gookit/color"
 	"gopkg.in/yaml.v3"
 )
@@ -29,9 +30,13 @@ var (
 		binpath, _ := filepath.Abs(os.Args[0])
 		return filepath.Dir(binpath)
 	}()
+	yamlFile = `
+choco: ""
+scoop: ""
+`
 )
 
-func getYamldata() yamlfile {
+func GetYamldata() yamlfile {
 	yamldata := yamlfile{}
 	if !CheckDir("packages.yml") {
 		fmt.Printf(Red("packages.yml not found...") + Yellow("Creating a new one...\n"))
@@ -39,7 +44,7 @@ func getYamldata() yamlfile {
 		if CheckDir("packages.yml") {
 			color.Green.Println("packages.yml file created!!!")
 		}
-		return getYamldata()
+		return GetYamldata()
 	}
 	file, err := os.ReadFile("packages.yml")
 	if err != nil {
@@ -63,24 +68,9 @@ func CheckOS() error {
 }
 
 func NewYamlFile() {
-	yamlstruct := yamlfile{}
-	file, err := os.Create("packages.yml")
-	if err != nil {
-		color.Red.Println("Error creating packages.yml")
-		End()
-		return
-	}
-	defer file.Close()
-	data, err := yaml.Marshal(yamlstruct)
-	if err != nil {
-		color.Red.Println("Error Marshalling packages file")
-		End()
-		return
-	}
-	_, err = file.WriteString(string(data))
+	err := file.ReWriteFile("packages.yml", yamlFile)
 	if err != nil {
 		color.Red.Println("Error writing the data in the new yml file")
-		End()
 		return
 	}
 }
@@ -132,7 +122,7 @@ func ScoopBucketInstall(bucket string) {
 	color.Green.Printf("%v bucket added!", bucket)
 }
 func ScoopPkgInstall() error {
-	data := getYamldata()
+	data := GetYamldata()
 	if linuxCH != nil {
 		return linuxCH
 	}
@@ -168,7 +158,7 @@ func ChocoPkgInstall() error {
 	var (
 		checksudo bool
 		sudotype  string
-		data      = getYamldata()
+		data      = GetYamldata()
 	)
 	if linuxCH != nil {
 		return linuxCH

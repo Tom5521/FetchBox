@@ -19,17 +19,18 @@ func Init() {
 	window.Resize(fyne.NewSize(344, 327))
 	window.SetMaster()
 
-	yamlData := getYmlData()
+	data := core.GetYamldata()
 
 	chocoLabel := widget.NewLabel("Choco packages to install:")
 	chocoLabel.TextStyle.Bold = true
 	editedTextChoco := widget.NewMultiLineEntry()
-	editedTextChoco.SetText(fmt.Sprintf("%v", yamlData["choco"]))
+
+	editedTextChoco.SetText(fmt.Sprintf("%v", data.Choco))
 
 	scoopLabel := widget.NewLabel("Scoop packages to install:")
 	scoopLabel.TextStyle.Bold = true
 	editedTextScoop := widget.NewMultiLineEntry()
-	editedTextScoop.SetText(fmt.Sprintf("%v", yamlData["scoop"]))
+	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
 
 	saveButton := widget.NewButton("Save package lists", func() {
 		saveText(editedTextChoco.Text, editedTextScoop.Text)
@@ -39,6 +40,10 @@ func Init() {
 	label.TextStyle.Italic = true
 
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
+		if err := core.CheckOS(); err != nil {
+			ErrWin(app, err, nil)
+			return
+		}
 		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" {
 			ErrWin(app, errors.New("Choco package list is empty"), nil)
 			return
@@ -53,6 +58,10 @@ func Init() {
 		ChocoInstall(app)
 	})
 	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
+		if err := core.CheckOS(); err != nil {
+			ErrWin(app, err, nil)
+			return
+		}
 		if editedTextScoop.Text == "" || editedTextScoop.Text == "<nil>" {
 			ErrWin(app, errors.New("Scoop package list is empty"), nil)
 			return
@@ -91,18 +100,6 @@ func saveText(chocoText, scoopText string) {
 	if err != nil {
 		fmt.Println("Error writing YAML file:", err)
 	}
-}
-
-func getYmlData() map[string]interface{} {
-	yamlData := make(map[string]interface{})
-	data, err := os.ReadFile("packages.yml")
-	if err == nil {
-		err := yaml.Unmarshal(data, &yamlData)
-		if err != nil {
-			fmt.Println("Error parsing YAML:", err)
-		}
-	}
-	return yamlData
 }
 
 func ChocoInstall(app fyne.App) {
