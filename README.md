@@ -2,6 +2,10 @@
 
 This is a little program why use for installing packages automatically in my windows making a frontend for scoop and choco package managers to which I plan to add many more functions
 
+![A screenshot of the program](./Assets/Screenshot1.png)
+
+![Other screenshot!](./Assets/Screenshot2.png) 
+
 ## Features
 
 #### Install choco and scoop packages
