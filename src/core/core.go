@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	Version string = "2.0.3"
+	Version string = "2.1"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
