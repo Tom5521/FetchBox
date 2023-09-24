@@ -21,24 +21,11 @@ func Init() {
 
 	data := core.GetYamldata()
 
+	// Choco Interface
 	chocoLabel := widget.NewLabel("Choco packages to install:")
 	chocoLabel.TextStyle.Bold = true
 	editedTextChoco := widget.NewMultiLineEntry()
-
 	editedTextChoco.SetText(fmt.Sprintf("%v", data.Choco))
-
-	scoopLabel := widget.NewLabel("Scoop packages to install:")
-	scoopLabel.TextStyle.Bold = true
-	editedTextScoop := widget.NewMultiLineEntry()
-	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
-
-	saveButton := widget.NewButton("Save package lists", func() {
-		saveText(editedTextChoco.Text, editedTextScoop.Text)
-	})
-
-	label := widget.NewLabel("Select any option")
-	label.TextStyle.Italic = true
-
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
 		if err := core.CheckOS(); err != nil {
 			ErrWin(app, err, nil)
@@ -55,8 +42,14 @@ func Init() {
 				return
 			}
 		}
-		ChocoInstall(app)
+		InstallWindow(app, "choco", core.ChocoPkgInstall)
 	})
+	// Scoop Interface
+	scoopLabel := widget.NewLabel("Scoop packages to install:")
+	scoopLabel.TextStyle.Bold = true
+	editedTextScoop := widget.NewMultiLineEntry()
+	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
+
 	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
 		if err := core.CheckOS(); err != nil {
 			ErrWin(app, err, nil)
@@ -66,24 +59,47 @@ func Init() {
 			ErrWin(app, errors.New("Scoop package list is empty"), nil)
 			return
 		}
-		ScoopInstall(app)
+		InstallWindow(app, "scoop", core.ScoopPkgInstall)
 	})
 
-	content := container.NewVBox(
+	// Both Interface
+
+	saveButton := widget.NewButton("Save package lists", func() {
+		saveText(editedTextChoco.Text, editedTextScoop.Text)
+	})
+
+	label := widget.NewLabel("Select any option")
+	label.TextStyle.Italic = true
+
+	// Set tabs and windows content
+	chocoTab := container.NewVBox(
 		chocoLabel,
 		editedTextChoco,
+		label,
+		saveButton,
+		installChocoPackBtn,
+	)
+	scoopTab := container.NewVBox(
 		scoopLabel,
 		editedTextScoop,
-		saveButton,
 		label,
-		installChocoPackBtn,
+		saveButton,
 		installScoopPackBtn,
+	)
+	tabs := container.NewAppTabs(
+		container.NewTabItem("Choco", chocoTab),
+		container.NewTabItem("Scoop", scoopTab),
+	)
+
+	content := container.NewVBox(
+		tabs,
 	)
 
 	window.SetContent(content)
 	window.ShowAndRun()
 }
 
+// Internal functions
 func saveText(chocoText, scoopText string) {
 	yamlData := map[string]interface{}{
 		"choco": chocoText,
@@ -102,48 +118,17 @@ func saveText(chocoText, scoopText string) {
 	}
 }
 
-func ChocoInstall(app fyne.App) {
-	window := app.NewWindow("Installing choco packages")
+func InstallWindow(app fyne.App, pkgManager string, f func() error) {
+	window := app.NewWindow(fmt.Sprintf("Installing %v packages", pkgManager))
 	window.Resize(fyne.NewSize(400, 70))
 	window.SetFixedSize(true)
 	infinite := widget.NewProgressBarInfinite()
-	acpBT := widget.NewButton("Continue", func() {
+	acceptButton := widget.NewButton("Continue", func() {
 		window.Close()
 	})
-	acpBT.Disable()
+	acceptButton.Disable()
 	go func() {
-		err := core.ChocoPkgInstall()
-		if err != nil {
-			infinite.Stop()
-			window.SetTitle("Completed with errors.")
-			ErrWin(app, err, window)
-		} else {
-			infinite.Stop()
-			window.SetTitle("Completed.")
-			acpBT.Enable()
-		}
-	}()
-	window.Close()
-	content := container.NewVBox(
-		infinite,
-		acpBT,
-	)
-	window.SetContent(content)
-	window.Show()
-
-}
-
-func ScoopInstall(app fyne.App) {
-	window := app.NewWindow("Installing scoop packages")
-	window.Resize(fyne.NewSize(400, 70))
-	window.SetFixedSize(true)
-	infinite := widget.NewProgressBarInfinite()
-	acpBT := widget.NewButton("Continue", func() {
-		window.Close()
-	})
-	acpBT.Disable()
-	go func() {
-		err := core.ScoopPkgInstall()
+		err := f()
 		if err != nil {
 			window.SetTitle("Completed with errors")
 			infinite.Stop()
@@ -151,17 +136,15 @@ func ScoopInstall(app fyne.App) {
 		} else {
 			infinite.Stop()
 			window.SetTitle("Completed.")
-			acpBT.Enable()
+			acceptButton.Enable()
 		}
 	}()
-	window.Close()
 	content := container.NewVBox(
 		infinite,
-		acpBT,
+		acceptButton,
 	)
 	window.SetContent(content)
 	window.Show()
-
 }
 
 func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
@@ -185,5 +168,4 @@ func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	window.SetContent(content)
 	window.SetMainMenu(window.MainMenu())
 	window.Show()
-
 }
