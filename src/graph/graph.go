@@ -21,24 +21,11 @@ func Init() {
 
 	data := core.GetYamldata()
 
+	// Choco Interface
 	chocoLabel := widget.NewLabel("Choco packages to install:")
 	chocoLabel.TextStyle.Bold = true
 	editedTextChoco := widget.NewMultiLineEntry()
-
 	editedTextChoco.SetText(fmt.Sprintf("%v", data.Choco))
-
-	scoopLabel := widget.NewLabel("Scoop packages to install:")
-	scoopLabel.TextStyle.Bold = true
-	editedTextScoop := widget.NewMultiLineEntry()
-	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
-
-	saveButton := widget.NewButton("Save package lists", func() {
-		saveText(editedTextChoco.Text, editedTextScoop.Text)
-	})
-
-	label := widget.NewLabel("Select any option")
-	label.TextStyle.Italic = true
-
 	installChocoPackBtn := widget.NewButton("Install Choco packages", func() {
 		if err := core.CheckOS(); err != nil {
 			ErrWin(app, err, nil)
@@ -57,6 +44,12 @@ func Init() {
 		}
 		ChocoInstall(app)
 	})
+	// Scoop Interface
+	scoopLabel := widget.NewLabel("Scoop packages to install:")
+	scoopLabel.TextStyle.Bold = true
+	editedTextScoop := widget.NewMultiLineEntry()
+	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
+
 	installScoopPackBtn := widget.NewButton("Install Scoop Packages", func() {
 		if err := core.CheckOS(); err != nil {
 			ErrWin(app, err, nil)
@@ -69,21 +62,44 @@ func Init() {
 		ScoopInstall(app)
 	})
 
-	content := container.NewVBox(
+	// Both Interface
+
+	saveButton := widget.NewButton("Save package lists", func() {
+		saveText(editedTextChoco.Text, editedTextScoop.Text)
+	})
+
+	label := widget.NewLabel("Select any option")
+	label.TextStyle.Italic = true
+
+	// Set tabs and windows content
+	chocoTab := container.NewVBox(
 		chocoLabel,
 		editedTextChoco,
+		label,
+		saveButton,
+		installChocoPackBtn,
+	)
+	scoopTab := container.NewVBox(
 		scoopLabel,
 		editedTextScoop,
-		saveButton,
 		label,
-		installChocoPackBtn,
+		saveButton,
 		installScoopPackBtn,
+	)
+	tabs := container.NewAppTabs(
+		container.NewTabItem("Choco", chocoTab),
+		container.NewTabItem("Scoop", scoopTab),
+	)
+
+	content := container.NewVBox(
+		tabs,
 	)
 
 	window.SetContent(content)
 	window.ShowAndRun()
 }
 
+// Internal functions
 func saveText(chocoText, scoopText string) {
 	yamlData := map[string]interface{}{
 		"choco": chocoText,
@@ -185,5 +201,4 @@ func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	window.SetContent(content)
 	window.SetMainMenu(window.MainMenu())
 	window.Show()
-
 }
