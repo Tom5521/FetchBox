@@ -42,7 +42,7 @@ func Init() {
 				return
 			}
 		}
-		ChocoInstall(app)
+		InstallWindow(app, "choco", core.ChocoPkgInstall)
 	})
 	// Scoop Interface
 	scoopLabel := widget.NewLabel("Scoop packages to install:")
@@ -59,7 +59,7 @@ func Init() {
 			ErrWin(app, errors.New("Scoop package list is empty"), nil)
 			return
 		}
-		ScoopInstall(app)
+		InstallWindow(app, "scoop", core.ScoopPkgInstall)
 	})
 
 	// Both Interface
@@ -118,48 +118,17 @@ func saveText(chocoText, scoopText string) {
 	}
 }
 
-func ChocoInstall(app fyne.App) {
-	window := app.NewWindow("Installing choco packages")
+func InstallWindow(app fyne.App, pkgManager string, f func() error) {
+	window := app.NewWindow(fmt.Sprintf("Installing %v packages", pkgManager))
 	window.Resize(fyne.NewSize(400, 70))
 	window.SetFixedSize(true)
 	infinite := widget.NewProgressBarInfinite()
-	acpBT := widget.NewButton("Continue", func() {
+	acceptButton := widget.NewButton("Continue", func() {
 		window.Close()
 	})
-	acpBT.Disable()
+	acceptButton.Disable()
 	go func() {
-		err := core.ChocoPkgInstall()
-		if err != nil {
-			infinite.Stop()
-			window.SetTitle("Completed with errors.")
-			ErrWin(app, err, window)
-		} else {
-			infinite.Stop()
-			window.SetTitle("Completed.")
-			acpBT.Enable()
-		}
-	}()
-	window.Close()
-	content := container.NewVBox(
-		infinite,
-		acpBT,
-	)
-	window.SetContent(content)
-	window.Show()
-
-}
-
-func ScoopInstall(app fyne.App) {
-	window := app.NewWindow("Installing scoop packages")
-	window.Resize(fyne.NewSize(400, 70))
-	window.SetFixedSize(true)
-	infinite := widget.NewProgressBarInfinite()
-	acpBT := widget.NewButton("Continue", func() {
-		window.Close()
-	})
-	acpBT.Disable()
-	go func() {
-		err := core.ScoopPkgInstall()
+		err := f()
 		if err != nil {
 			window.SetTitle("Completed with errors")
 			infinite.Stop()
@@ -167,17 +136,15 @@ func ScoopInstall(app fyne.App) {
 		} else {
 			infinite.Stop()
 			window.SetTitle("Completed.")
-			acpBT.Enable()
+			acceptButton.Enable()
 		}
 	}()
-	window.Close()
 	content := container.NewVBox(
 		infinite,
-		acpBT,
+		acceptButton,
 	)
 	window.SetContent(content)
 	window.Show()
-
 }
 
 func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
