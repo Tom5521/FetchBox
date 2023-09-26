@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -21,14 +20,23 @@ import (
 )
 
 var (
-	Version string = "2.1"
+	Version string = "v2.2"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
-	Yellow         = color.FgYellow.Render
-	linuxCH        = CheckOS()
-	Root    string = func() string {
-		binpath, _ := filepath.Abs(os.Args[0])
-		return filepath.Dir(binpath)
+	Yellow  = color.FgYellow.Render
+	linuxCH = CheckOS()
+	sh      = func() commands.Sh {
+		internal_sh := commands.Sh{}
+		internal_sh.CustomStd.Enable = true
+		internal_sh.CustomStd.Stdin = false
+		internal_sh.CustomStd.Stderr = false
+		internal_sh.CustomStd.Stdout = false
+		internal_sh.RunWithShell = false
+		return internal_sh
+	}()
+	Root = func() string {
+		dir, _ := os.Executable()
+		return dir
 	}()
 	STRyamlFile = `
 choco: ""
@@ -100,8 +108,6 @@ func CheckDir(dir string) bool {
 func End() {
 	fmt.Println("Process Completed.")
 }
-
-var sh commands.Sh = commands.Sh{}
 
 func ScoopBucketInstall(bucket string) {
 	if _, check := sh.Out("git --version"); check != nil {
