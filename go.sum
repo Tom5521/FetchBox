@@ -47,6 +47,8 @@ github.com/Tom5521/MyGolangTools v0.0.0-20230806053540-1d169699a019 h1:SNXIavRN8
 github.com/Tom5521/MyGolangTools v0.0.0-20230806053540-1d169699a019/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
 github.com/Tom5521/MyGolangTools v0.0.0-20230816231450-36b02638e41c h1:chvCOXnVMqlAmhYmr3/+W/rjIrP+rjS2YS05b7pXM30=
 github.com/Tom5521/MyGolangTools v0.0.0-20230816231450-36b02638e41c/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
+github.com/Tom5521/MyGolangTools v0.0.0-20230925233926-13d21ad74032 h1:V+hjuB3CeHLtiRwJJXXmuhtACL39kyHnV6qp7j6OBh4=
+github.com/Tom5521/MyGolangTools v0.0.0-20230925233926-13d21ad74032/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
