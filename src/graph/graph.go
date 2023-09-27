@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"os"
 
+	"Windows-package-autoinstaller/src/core"
+	"Windows-package-autoinstaller/src/icon"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"Windows-package-autoinstaller/src/core"
-	"Windows-package-autoinstaller/src/icon"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,8 +31,9 @@ var (
 
 func Init() {
 	var (
-		arg1, arg2, arg3                       string
-		chocoVerbose, ChocoForce, ChocoUpgrade bool
+		arg1, arg2, arg3                                     string
+		scoopArg1                                            string
+		chocoVerbose, ChocoForce, ChocoUpgrade, ScoopUpgrade bool
 	)
 	app := app.New()
 	window := app.NewWindow("Windows Package AutoInstaller")
@@ -69,7 +71,7 @@ func Init() {
 			ChocoForce = true
 		}
 	})
-	if data.Choco_force {
+	if data.ChocoConfigs.Force {
 		chocoForceCheckBox1.SetChecked(true) // Set yaml config
 	}
 	chocoVerboseCheckBox := widget.NewCheck("Verbose", func(check bool) {
@@ -78,7 +80,7 @@ func Init() {
 			chocoVerbose = true
 		}
 	})
-	if data.Choco_verbose {
+	if data.ChocoConfigs.Verbose {
 		chocoVerboseCheckBox.SetChecked(true) // set yaml config
 	}
 	chocoUpgradeCheckBox := widget.NewCheck("Upgrade", func(check bool) {
@@ -87,8 +89,8 @@ func Init() {
 			ChocoUpgrade = true
 		}
 	})
-	if data.Choco_upgrade {
-		chocoVerboseCheckBox.SetChecked(true) // Set yaml config
+	if data.ChocoConfigs.Upgrade {
+		chocoUpgradeCheckBox.SetChecked(true) // Set yaml config
 	}
 	installChocoPackBtn := widget.NewButtonWithIcon("Install Choco packages", DownloadICON, func() {
 		if err := core.CheckOS(); err != nil {
@@ -120,6 +122,15 @@ func Init() {
 	scoopLabel.TextStyle.Bold = true
 	editedTextScoop := widget.NewMultiLineEntry()
 	editedTextScoop.SetText(fmt.Sprintf("%v", data.Scoop))
+	scoopUpgradeCheckButton := widget.NewCheck("Upgrade", func(check bool) {
+		if check {
+			scoopArg1 = "upgrade"
+			ScoopUpgrade = true
+		}
+	})
+	if data.ScoopConfigs.Upgrade {
+		scoopUpgradeCheckButton.SetChecked(true)
+	}
 	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", DownloadICON, func() {
 		if err := core.CheckOS(); err != nil {
 			ErrWin(app, err, nil)
@@ -134,7 +145,7 @@ func Init() {
 			return
 		}
 		InstallWindow(app, "Scoop", func() error {
-			err := core.ScoopPkgInstall()
+			err := core.ScoopPkgInstall(scoopArg1)
 			return err
 		})
 	})
@@ -142,7 +153,13 @@ func Init() {
 	// Both Interface
 
 	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
-		saveText(editedTextChoco.Text, editedTextScoop.Text, chocoVerbose, ChocoForce, ChocoUpgrade)
+		saveText(editedTextChoco.Text,
+			editedTextScoop.Text,
+			chocoVerbose,
+			ChocoForce,
+			ChocoUpgrade,
+			ScoopUpgrade,
+		)
 	})
 
 	label := widget.NewLabel("Select any option")
@@ -169,6 +186,7 @@ func Init() {
 		scoopLabel,
 		editedTextScoop,
 		label,
+		scoopUpgradeCheckButton,
 		container.NewHBox(
 			saveButton,
 			installScoopPackBtn,
@@ -188,14 +206,15 @@ func Init() {
 }
 
 // Internal functions
-func saveText(chocoText, scoopText string, chocoVerbose, chocoForce, chocoUpgrade bool) {
-	yamlData := core.Yamlfile{
-		Choco: chocoText, Scoop: scoopText,
-		Choco_verbose: chocoVerbose,
-		Choco_force:   chocoForce,
-		Choco_upgrade: chocoUpgrade,
-	}
+func saveText(chocoText, scoopText string, chocoVerbose, chocoForce, chocoUpgrade, scoopUpgrade bool) {
+	yamlData := core.Yamlfile{}
+	yamlData.Choco = chocoText
+	yamlData.Scoop = scoopText
+	yamlData.ChocoConfigs.Force = chocoForce
+	yamlData.ChocoConfigs.Verbose = chocoVerbose
+	yamlData.ChocoConfigs.Upgrade = chocoUpgrade
 
+	yamlData.ScoopConfigs.Upgrade = scoopUpgrade
 	data, err := yaml.Marshal(yamlData)
 	if err != nil {
 		fmt.Println("Error marshalling YAML:", err)

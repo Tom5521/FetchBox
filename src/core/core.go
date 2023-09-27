@@ -34,22 +34,19 @@ var (
 		dir, _ := os.Executable()
 		return dir
 	}()
-	STRyamlFile = `
-choco: ""
-scoop: ""
-choco_verbose: false
-choco_force: false
-choco_upgrade: false
-
-`
 )
 
 type Yamlfile struct {
-	Scoop         string `yaml:"scoop"`
-	Choco         string `yaml:"choco"`
-	Choco_verbose bool   `yaml:"choco_verbose"`
-	Choco_force   bool   `yaml:"choco_force"`
-	Choco_upgrade bool   `yaml:"choco_upgrade"`
+	Scoop        string `yaml:"scoop"`
+	Choco        string `yaml:"choco"`
+	ChocoConfigs struct {
+		Verbose bool `yaml:"verbose"`
+		Force   bool `yaml:"force"`
+		Upgrade bool `yaml:"upgrade"`
+	} `yaml:"Choco_configs"`
+	ScoopConfigs struct {
+		Upgrade bool `yaml:"upgrade"`
+	} `yaml:"Scoop_Configs"`
 }
 
 func GetYamldata() Yamlfile {
@@ -82,7 +79,12 @@ func CheckOS() error {
 }
 
 func NewYamlFile() {
-	err := file.ReWriteFile("packages.yml", STRyamlFile)
+	yamlData := Yamlfile{}
+	data, err := yaml.Marshal(yamlData)
+	if err != nil {
+		return
+	}
+	err = file.ReWriteFile("packages.yml", string(data))
 	if err != nil {
 		color.Red.Println("Error writing the data in the new yml file")
 		return
@@ -126,6 +128,7 @@ func ScoopBucketInstall(bucket string) error {
 	return nil
 }
 func ScoopPkgInstall(optArsg ...string) error {
+	var err error
 	data := GetYamldata()
 	if linuxCH != nil {
 		return linuxCH
@@ -138,10 +141,17 @@ func ScoopPkgInstall(optArsg ...string) error {
 		return errors.New("Scoop must be run without administrator permissions")
 	}
 	if strings.Contains(data.Scoop, "np") {
-		ScoopBucketInstall("nonportable")
+		err := ScoopBucketInstall("nonportable")
+		if err != nil {
+			return err
+		}
 	}
 	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", data.Scoop)
-	err := sh.Cmd(fmt.Sprintf("scoop install %v %v", strings.Join(optArsg, " "), data.Scoop))
+	if optArsg[0] != "upgrade" {
+		err = sh.Cmd(fmt.Sprintf("scoop install %v %v", strings.Join(optArsg, " "), data.Scoop))
+	} else {
+		err = sh.Cmd(fmt.Sprintf("scoop upgrade %v %v", strings.Join(optArsg[0:], " "), data.Scoop))
+	}
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 		return err
@@ -181,7 +191,7 @@ func ChocoPkgInstall(args ...string) error {
 		color.Yellow.Println("Using " + sudotype)
 	}
 	if args[2] == "upgrade" {
-		command = fmt.Sprintf("%vchoco upgrade -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
+		command = fmt.Sprintf("%vchoco upgrade -y %v %v", sudotype, fmt.Sprintf("%v %v", args[1], args[0]), data.Choco)
 	} else {
 		command = fmt.Sprintf("%vchoco install -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
 	}
@@ -192,14 +202,6 @@ func ChocoPkgInstall(args ...string) error {
 	} else {
 		color.Green.Println("Prosess Completed without errors!!!")
 		return nil
-	}
-}
-
-func Clear() {
-	tempcmd := sh
-	err := tempcmd.Cmd("cls")
-	if err != nil {
-		color.Red.Println("Error Cleaning the terminal")
 	}
 }
 
