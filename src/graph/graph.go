@@ -9,8 +9,8 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/Tom5521/Windows-package-autoinstaller/src/core"
-	"github.com/Tom5521/Windows-package-autoinstaller/src/icon"
+	"Windows-package-autoinstaller/src/core"
+	"Windows-package-autoinstaller/src/icon"
 	"gopkg.in/yaml.v3"
 )
 

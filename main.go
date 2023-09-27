@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Tom5521/Windows-package-autoinstaller/src/core"
-	"github.com/Tom5521/Windows-package-autoinstaller/src/graph"
+	"Windows-package-autoinstaller/src/core"
+	"Windows-package-autoinstaller/src/graph"
 )
 
 func main() {

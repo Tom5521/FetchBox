@@ -1,4 +1,4 @@
-module github.com/Tom5521/Windows-package-autoinstaller
+module Windows-package-autoinstaller
 
 go 1.20
 
