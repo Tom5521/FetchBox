@@ -16,8 +16,10 @@ import (
 
 func main() {
 	if len(os.Args) > 1 {
-		TermMode() // Check the cmd args
-		return
+		if os.Args[1] != "dev" {
+			TermMode() // Check the cmd args
+			return
+		}
 	}
 	graph.Init() // Initialize the graphical mode
 }
@@ -43,7 +45,10 @@ func TermMode() {
 		)
 	case "addCustomBuckets":
 		if len(os.Args) >= 3 {
-			core.ScoopBucketInstall(os.Args[2])
+			err := core.ScoopBucketInstall(os.Args[2])
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		}
 	}
 }

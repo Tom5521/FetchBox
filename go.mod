@@ -3,6 +3,7 @@ module github.com/Tom5521/Windows-package-autoinstaller
 go 1.20
 
 require (
+	fyne.io/fyne v1.4.3
 	fyne.io/fyne/v2 v2.4.0
 	github.com/Tom5521/MyGolangTools v0.0.0-20230926041029-175c0f086110
 	github.com/gookit/color v1.5.4

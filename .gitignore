@@ -15,3 +15,6 @@ Windows-package-autoinstaller.wasm
 Windows-package-autoinstaller.tar.xz
 WPA.tar.x
 WPA.tar.xz
+initcmd.bat
+gorun.bat
+commit-msg.txt

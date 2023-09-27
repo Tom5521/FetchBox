@@ -27,10 +27,6 @@ var (
 	linuxCH = CheckOS()
 	sh      = func() commands.Sh {
 		internal_sh := commands.Sh{}
-		internal_sh.CustomStd.Enable = true
-		internal_sh.CustomStd.Stdin = false
-		internal_sh.CustomStd.Stderr = false
-		internal_sh.CustomStd.Stdout = false
 		internal_sh.RunWithShell = false
 		return internal_sh
 	}()
@@ -41,11 +37,23 @@ var (
 	STRyamlFile = `
 choco: ""
 scoop: ""
+choco_verbose: false
+choco_force: false
+choco_upgrade: false
+
 `
 )
 
-func GetYamldata() yamlfile {
-	yamldata := yamlfile{}
+type Yamlfile struct {
+	Scoop         string `yaml:"scoop"`
+	Choco         string `yaml:"choco"`
+	Choco_verbose bool   `yaml:"choco_verbose"`
+	Choco_force   bool   `yaml:"choco_force"`
+	Choco_upgrade bool   `yaml:"choco_upgrade"`
+}
+
+func GetYamldata() Yamlfile {
+	yamldata := Yamlfile{}
 	if !CheckDir("packages.yml") {
 		fmt.Printf(Red("packages.yml not found...") + Yellow("Creating a new one...\n"))
 		NewYamlFile()
@@ -57,12 +65,10 @@ func GetYamldata() yamlfile {
 	file, err := os.ReadFile("packages.yml")
 	if err != nil {
 		color.Red.Println("Error reading packages.yml")
-		End()
 	}
 	err = yaml.Unmarshal(file, &yamldata)
 	if err != nil {
 		color.Red.Println("Error Unmarshalling the data")
-		End()
 	}
 	return yamldata
 }
@@ -83,11 +89,6 @@ func NewYamlFile() {
 	}
 }
 
-type yamlfile struct {
-	Scoop string `yaml:"scoop"`
-	Choco string `yaml:"choco"`
-}
-
 var IsAdmin bool = func() bool {
 	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
 	if err != nil {
@@ -105,18 +106,13 @@ func CheckDir(dir string) bool {
 	}
 }
 
-func End() {
-	fmt.Println("Process Completed.")
-}
-
-func ScoopBucketInstall(bucket string) {
+func ScoopBucketInstall(bucket string) error {
 	if _, check := sh.Out("git --version"); check != nil {
 		color.Yellow.Println("Git is not installed... Installing git...")
 		err := sh.Cmd("scoop install git")
 		if err != nil {
 			color.Red.Println("Error installing git...")
-			End()
-			return
+			return err
 		}
 		color.Green.Println("Git Installed!")
 	}
@@ -124,24 +120,19 @@ func ScoopBucketInstall(bucket string) {
 	err := sh.Cmd(fmt.Sprintf("scoop bucket add %v", bucket))
 	if err != nil {
 		color.Red.Printf("Error adding %v bucket", bucket)
+		return err
 	}
 	color.Green.Printf("%v bucket added!", bucket)
+	return nil
 }
-func ScoopPkgInstall() error {
+func ScoopPkgInstall(optArsg ...string) error {
 	data := GetYamldata()
 	if linuxCH != nil {
 		return linuxCH
 	}
 	if data.Scoop == "" {
 		color.Red.Println("No package for scoop written in packages.yml")
-		End()
 		return errors.New("no package for scoop written in packages.yml")
-	}
-	if check := CheckScoop(); !check {
-		err := InstallScoop()
-		if err != nil {
-			return err
-		}
 	}
 	if IsAdmin {
 		return errors.New("Scoop must be run without administrator permissions")
@@ -150,7 +141,7 @@ func ScoopPkgInstall() error {
 		ScoopBucketInstall("nonportable")
 	}
 	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", data.Scoop)
-	err := sh.Cmd("scoop install " + data.Scoop)
+	err := sh.Cmd(fmt.Sprintf("scoop install %v %v", strings.Join(optArsg, " "), data.Scoop))
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 		return err
@@ -160,11 +151,11 @@ func ScoopPkgInstall() error {
 	}
 }
 
-func ChocoPkgInstall() error {
+func ChocoPkgInstall(args ...string) error {
 	var (
-		checksudo bool
-		sudotype  string
-		data      = GetYamldata()
+		checksudo         bool
+		sudotype, command string
+		data              = GetYamldata()
 	)
 	if linuxCH != nil {
 		return linuxCH
@@ -180,23 +171,20 @@ func ChocoPkgInstall() error {
 		checksudo, sudotype = CheckSudo()
 		if !checksudo {
 			color.Red.Println("sudo or gsudo not detected.")
-			End()
 			return errors.New("sudo or gsudo not detected.")
 		}
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
 	}
-	if check := CheckChoco(); !check {
-		err := InstallChoco()
-		if err != nil {
-			return err
-		}
-	}
 	fmt.Printf(Yellow("Installing with choco ")+"%v\n", data.Choco)
 	if checksudo {
 		color.Yellow.Println("Using " + sudotype)
 	}
-	command := fmt.Sprintf("%vchoco install -y %v", sudotype, data.Choco)
+	if args[2] == "upgrade" {
+		command = fmt.Sprintf("%vchoco upgrade -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
+	} else {
+		command = fmt.Sprintf("%vchoco install -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
+	}
 	err := sh.Cmd(command)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
@@ -245,12 +233,16 @@ func CheckSudo() (bool, string) {
 
 func InstallScoop() error {
 	tempshell := sh
+	tempshell.RunWithShell = true
 	tempshell.Windows.PowerShell = true
-	err1 := tempshell.Cmd("Set-Exe*cutionPolicy RemoteSigned -Scope CurrentUser")
+	err1 := tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
 	err2 := tempshell.Cmd("irm get.scoop.sh | iex")
-	ScoopBucketInstall("extras")
 	if err1 != nil || err2 != nil {
-		return errors.New("Error Installing scoop")
+		return errors.New(fmt.Sprintf("Error installing scoop:\nCmd1:%v\nCmd2:%v", err1.Error(), err2.Error()))
+	}
+	err := ScoopBucketInstall("extras")
+	if err != nil {
+		return err
 	}
 	return nil
 }
