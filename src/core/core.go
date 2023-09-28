@@ -23,9 +23,10 @@ var (
 	Version string = "v2.2"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
-	Yellow  = color.FgYellow.Render
-	linuxCH = CheckOS()
-	sh      = func() commands.Sh {
+	Yellow         = color.FgYellow.Render
+	linuxCH        = CheckOS()
+	ConfigFilename = "wpa-config.yml"
+	sh             = func() commands.Sh {
 		internal_sh := commands.Sh{}
 		internal_sh.RunWithShell = false
 		return internal_sh
@@ -51,17 +52,18 @@ type Yamlfile struct {
 
 func GetYamldata() Yamlfile {
 	yamldata := Yamlfile{}
-	if !CheckDir("packages.yml") {
-		fmt.Printf(Red("packages.yml not found...") + Yellow("Creating a new one...\n"))
+	if !CheckDir(ConfigFilename) {
+		fmt.Printf(Red(ConfigFilename+" not found...") + Yellow("Creating a new one...\n"))
 		NewYamlFile()
-		if CheckDir("packages.yml") {
-			color.Green.Println("packages.yml file created!!!")
+		if CheckDir(ConfigFilename) {
+			color.Green.Println(ConfigFilename + " file created!!!")
 		}
 		return GetYamldata()
 	}
-	file, err := os.ReadFile("packages.yml")
+
+	file, err := os.ReadFile(ConfigFilename)
 	if err != nil {
-		color.Red.Println("Error reading packages.yml")
+		color.Red.Println("Error reading " + ConfigFilename)
 	}
 	err = yaml.Unmarshal(file, &yamldata)
 	if err != nil {
@@ -84,7 +86,7 @@ func NewYamlFile() {
 	if err != nil {
 		return
 	}
-	err = file.ReWriteFile("packages.yml", string(data))
+	err = file.ReWriteFile(ConfigFilename, string(data))
 	if err != nil {
 		color.Red.Println("Error writing the data in the new yml file")
 		return
@@ -134,8 +136,8 @@ func ScoopPkgInstall(optArsg ...string) error {
 		return linuxCH
 	}
 	if data.Scoop == "" {
-		color.Red.Println("No package for scoop written in packages.yml")
-		return errors.New("no package for scoop written in packages.yml")
+		color.Red.Println("No package for scoop written in " + ConfigFilename)
+		return errors.New("no package for scoop written in " + ConfigFilename)
 	}
 	if IsAdmin {
 		return errors.New("Scoop must be run without administrator permissions")
@@ -171,8 +173,8 @@ func ChocoPkgInstall(args ...string) error {
 		return linuxCH
 	}
 	if data.Choco == "" {
-		color.Red.Println("No package for choco written in packages.yml")
-		return errors.New("No package for choco written in packages.yml")
+		color.Red.Println("No package for choco written in " + ConfigFilename)
+		return errors.New("No package for choco written in " + ConfigFilename)
 	}
 
 	if !IsAdmin {

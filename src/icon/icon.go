@@ -8,6 +8,7 @@ import (
 )
 
 var (
+	// Dark Icons
 	DevICON_Dark      fyne.Resource
 	DownloadICON_Dark fyne.Resource
 	ErrorICON_Dark    fyne.Resource
@@ -15,6 +16,7 @@ var (
 	SaveICON_Dark     fyne.Resource
 	RestartICON_Dark  fyne.Resource
 
+	// Light Icons
 	DevICON_Light      fyne.Resource
 	DownloadICON_Light fyne.Resource
 	ErrorICON_Light    fyne.Resource
@@ -22,6 +24,7 @@ var (
 	SaveICON_Light     fyne.Resource
 	RestartICON_Light  fyne.Resource
 
+	// Themed Icons
 	DevICON      fyne.Resource
 	DownloadICON fyne.Resource
 	ErrorICON    fyne.Resource
@@ -29,13 +32,15 @@ var (
 	SaveICON     fyne.Resource
 	RestartICON  fyne.Resource
 
-	AppICON fyne.Resource
+	// No-Theme Icons
+	AppICON         fyne.Resource
+	PlaceholderICON fyne.Resource
 )
 
 func LoadResource(app fyne.App, Filename string) (fyne.Resource, error) {
 	ret, err := fyne.LoadResourceFromPath(Filename)
 	if err != nil {
-		return app.Icon(), errors.New("Error loading " + Filename + "resource")
+		return PlaceholderICON, errors.New("Error loading " + Filename + "resource")
 	}
 	return ret, nil
 }
@@ -43,6 +48,10 @@ func LoadResource(app fyne.App, Filename string) (fyne.Resource, error) {
 func LoadIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 	var err error
 
+	PlaceholderICON, err = LoadResource(app, "./Assets/Placeholder.png")
+	if err != nil {
+		errWin(app, err, nil)
+	}
 	AppICON, err = LoadResource(app, "./Assets/Icon.png")
 	if err != nil {
 		errWin(app, err, nil)

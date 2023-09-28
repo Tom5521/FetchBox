@@ -27,5 +27,9 @@
 
 ./Icons-\*/Dev.png from [Font Awesome Icons](https://iconduck.com/sets/font-awesome-icons)
 
+![Placeholder](./Placeholder.png)
+
+./Placeholder.png from [me :D](https://www.github.com/Tom5521)
+
 
 **Note:** The dark icons are only the light icons with the colors inverted so they share authorship.

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"Windows-package-autoinstaller/src/core"
+	"Windows-package-autoinstaller/src/dev"
 	"Windows-package-autoinstaller/src/icon"
 
 	"fyne.io/fyne/v2"
@@ -42,18 +43,21 @@ func Init() {
 	window.SetIcon(icon.AppICON)
 
 	// Load the Icons and set the theme
-	icon.LoadIcons(app, ErrWin)
-	icon.SetThemeIcons(app, ErrWin)
-	DevICON = icon.DevICON
-	DownloadICON = icon.DownloadICON
-	ErrorICON = icon.ErrorICON
-	InstallICON = icon.InstallICON
-	SaveICON = icon.InstallICON
-	RestartICON = icon.RestartICON
+
+	func() {
+		icon.LoadIcons(app, ErrWin)
+		icon.SetThemeIcons(app, ErrWin)
+		DevICON = icon.DevICON
+		DownloadICON = icon.DownloadICON
+		ErrorICON = icon.ErrorICON
+		InstallICON = icon.InstallICON
+		SaveICON = icon.SaveICON
+		RestartICON = icon.RestartICON
+	}()
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "dev" {
-			go DevWindow(app)
+			go dev.DevWindow(app, RestartWindow, ErrWin, InstallPkgManagerWin)
 		}
 	}
 
@@ -153,7 +157,8 @@ func Init() {
 	// Both Interface
 
 	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
-		saveText(editedTextChoco.Text,
+		saveText(
+			editedTextChoco.Text,
 			editedTextScoop.Text,
 			chocoVerbose,
 			ChocoForce,
@@ -208,12 +213,14 @@ func Init() {
 // Internal functions
 func saveText(chocoText, scoopText string, chocoVerbose, chocoForce, chocoUpgrade, scoopUpgrade bool) {
 	yamlData := core.Yamlfile{}
+
+	// Set choco values
 	yamlData.Choco = chocoText
 	yamlData.Scoop = scoopText
 	yamlData.ChocoConfigs.Force = chocoForce
 	yamlData.ChocoConfigs.Verbose = chocoVerbose
 	yamlData.ChocoConfigs.Upgrade = chocoUpgrade
-
+	// Set scoop values
 	yamlData.ScoopConfigs.Upgrade = scoopUpgrade
 	data, err := yaml.Marshal(yamlData)
 	if err != nil {
@@ -221,7 +228,7 @@ func saveText(chocoText, scoopText string, chocoVerbose, chocoForce, chocoUpgrad
 		return
 	}
 
-	err = os.WriteFile("packages.yml", data, 0644)
+	err = os.WriteFile(core.ConfigFilename, data, 0644)
 	if err != nil {
 		fmt.Println("Error writing YAML file:", err)
 	}
@@ -336,31 +343,5 @@ func RestartWindow(app fyne.App, restartTXT string) {
 		label,
 		restartButton,
 	))
-	window.Show()
-}
-
-func DevWindow(app fyne.App) {
-	window := app.NewWindow("Dev")
-	window.SetIcon(DevICON)
-	restartButtom := widget.NewButton("Restart", func() {
-		RestartWindow(app, "Dev")
-	})
-	errButtom := widget.NewButton("Custom Error buttom", func() {
-		ErrWin(app, errors.New("Development"), nil)
-	})
-	installpkgmngBT_Scoop := widget.NewButton("Install Scoop pkg manager", func() {
-		InstallPkgManagerWin(app, "Development -Scoop-", core.InstallScoop)
-	})
-	installpkgmngBT_Choco := widget.NewButton("Install choco pkg manager", func() {
-		InstallPkgManagerWin(app, "Development -Choco-", core.InstallChoco)
-	})
-
-	content := container.NewVBox(
-		restartButtom,
-		errButtom,
-		installpkgmngBT_Choco,
-		installpkgmngBT_Scoop,
-	)
-	window.SetContent(content)
 	window.Show()
 }
