@@ -21,6 +21,7 @@ var (
 	InstallICON_Dark  fyne.Resource
 	SaveICON_Dark     fyne.Resource
 	RestartICON_Dark  fyne.Resource
+	InfoICON_Dark     fyne.Resource
 
 	// Light Icons
 	DevICON_Light      fyne.Resource
@@ -29,6 +30,7 @@ var (
 	InstallICON_Light  fyne.Resource
 	SaveICON_Light     fyne.Resource
 	RestartICON_Light  fyne.Resource
+	InfoICON_Light     fyne.Resource
 
 	// Themed Icons
 	DevICON      fyne.Resource
@@ -37,6 +39,7 @@ var (
 	InstallICON  fyne.Resource
 	SaveICON     fyne.Resource
 	RestartICON  fyne.Resource
+	InfoICON     fyne.Resource
 
 	// No-Theme Icons
 	AppICON         fyne.Resource
@@ -63,7 +66,7 @@ func LoadIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 		errWin(app, err, nil)
 	}
 
-	icons := []string{"Dev.png", "Install.png", "Download.png", "Error.png", "Save.png", "Restart.png"}
+	icons := []string{"Dev.png", "Install.png", "Download.png", "Error.png", "Save.png", "Restart.png", "Info.png"}
 
 	// Load dark icons
 	for _, name := range icons {
@@ -85,6 +88,8 @@ func LoadIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 			SaveICON_Dark = icon
 		case "Restart.png":
 			RestartICON_Dark = icon
+		case "Info.png":
+			InfoICON_Dark = icon
 		}
 	}
 
@@ -108,6 +113,8 @@ func LoadIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 			SaveICON_Light = icon
 		case "Restart.png":
 			RestartICON_Light = icon
+		case "Info.png":
+			InfoICON_Light = icon
 		}
 	}
 }
@@ -120,6 +127,7 @@ func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 		ErrorICON = ErrorICON_Light
 		SaveICON = SaveICON_Light
 		RestartICON = RestartICON_Light
+		InfoICON = InfoICON_Light
 	} else {
 		DevICON = DevICON_Dark
 		InstallICON = InstallICON_Dark
@@ -127,5 +135,6 @@ func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 		ErrorICON = ErrorICON_Dark
 		SaveICON = SaveICON_Dark
 		RestartICON = RestartICON_Dark
+		InfoICON = InfoICON_Dark
 	}
 }

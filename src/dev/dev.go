@@ -17,7 +17,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error)) { // This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
+func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string)) { // This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
 	restartButtom := widget.NewButton("Restart", func() {
@@ -35,6 +35,9 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 	ShowIconsButton := widget.NewButton("Show all icons", func() {
 		ShowIconsWin(app)
 	})
+	ShowInfoWinButton := widget.NewButton("Show Info window", func() {
+		InfoWin(app, "This is a dev window!")
+	})
 
 	content := container.NewVBox(
 		restartButtom,
@@ -42,6 +45,7 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 		installpkgmngBT_Choco,
 		installpkgmngBT_Scoop,
 		ShowIconsButton,
+		ShowInfoWinButton,
 	)
 	window.SetContent(content)
 	window.Show()
@@ -61,6 +65,7 @@ func ShowIconsWin(app fyne.App) {
 	icon4 := canvas.NewImageFromResource(icon.InstallICON_Dark)
 	icon5 := canvas.NewImageFromResource(icon.SaveICON_Dark)
 	icon6 := canvas.NewImageFromResource(icon.RestartICON_Dark)
+	icon14 := canvas.NewImageFromResource(icon.InfoICON_Dark)
 
 	//icon1.Resize(size)
 	//icon1.MinSize().Width = 64
@@ -77,6 +82,7 @@ func ShowIconsWin(app fyne.App) {
 	icon10 := canvas.NewImageFromResource(icon.InstallICON_Light)
 	icon11 := canvas.NewImageFromResource(icon.SaveICON_Light)
 	icon12 := canvas.NewImageFromResource(icon.RestartICON_Light)
+	icon13 := canvas.NewImageFromResource(icon.InfoICON_Light)
 
 	icon7.FillMode = canvas.ImageFillOriginal
 	icon8.FillMode = canvas.ImageFillOriginal
@@ -85,6 +91,9 @@ func ShowIconsWin(app fyne.App) {
 	icon11.FillMode = canvas.ImageFillOriginal
 	icon12.FillMode = canvas.ImageFillOriginal
 
+	icon13.FillMode = canvas.ImageFillOriginal
+	icon14.FillMode = canvas.ImageFillOriginal
+
 	contentH1 := container.NewHBox(
 		icon1,
 		icon2,
@@ -92,6 +101,7 @@ func ShowIconsWin(app fyne.App) {
 		icon4,
 		icon5,
 		icon6,
+		icon14,
 	)
 
 	contentH2 := container.NewHBox(
@@ -101,8 +111,8 @@ func ShowIconsWin(app fyne.App) {
 		icon10,
 		icon11,
 		icon12,
+		icon13,
 	)
-
 	w.SetContent(container.NewVBox(contentH1, contentH2, AppIcon))
 	w.Show()
 }

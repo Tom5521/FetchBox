@@ -27,6 +27,10 @@
 
 ./Icons-\*/Dev.png from [Font Awesome Icons](https://iconduck.com/sets/font-awesome-icons)
 
+![Info icon](./Icons-Light/Info.png)
+
+./Icons-\*/Info.png from [Google Material Design Icons](https://iconduck.com/sets/google-material-design-icons)
+
 ![Placeholder](./Placeholder.png)
 
 ./Placeholder.png from [me :D](https://www.github.com/Tom5521)

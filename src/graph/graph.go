@@ -63,7 +63,7 @@ func Init() {
 
 	if len(os.Args) > 1 {
 		if os.Args[1] == "dev" {
-			go dev.DevWindow(app, RestartWindow, ErrWin, InstallPkgManagerWin)
+			go CallDevWindow(app)
 		}
 	}
 
@@ -359,4 +359,22 @@ func RestartWindow(app fyne.App, restartTXT string) {
 		restartButton,
 	))
 	window.Show()
+}
+
+func InfoWindow(app fyne.App, text string) {
+	window := app.NewWindow("Info")
+
+	InfoLabel := widget.NewLabel(text)
+	InfoLabel.Alignment = fyne.TextAlignCenter
+	InfoLabel.TextStyle.Bold = true
+
+	AcceptButton := widget.NewButton("Accept", window.Close)
+
+	window.SetContent(container.NewVBox(InfoLabel, AcceptButton))
+
+	window.Show()
+}
+
+func CallDevWindow(app fyne.App) {
+	dev.DevWindow(app, RestartWindow, ErrWin, InstallPkgManagerWin, InfoWindow)
 }
