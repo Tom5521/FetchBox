@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package icon
 
 import (

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package graph
 
 import (
@@ -5,15 +11,15 @@ import (
 	"fmt"
 	"os"
 
-	"Windows-package-autoinstaller/src/core"
-	"Windows-package-autoinstaller/src/dev"
-	"Windows-package-autoinstaller/src/icon"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"gopkg.in/yaml.v3"
+
+	"Windows-package-autoinstaller/src/core"
+	"Windows-package-autoinstaller/src/dev"
+	"Windows-package-autoinstaller/src/icon"
 )
 
 var (
@@ -102,13 +108,19 @@ func Init() {
 			return
 		}
 		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" {
-			ErrWin(app, errors.New("Choco package list is empty"), nil)
+			ErrWin(app, errors.New("choco package list is empty"), nil)
 			return
 		}
 		if !core.IsAdmin {
 			err := core.CheckSudo_External()
 			if err != nil {
-				ErrWin(app, errors.New("Sudo not detected!\nRestart the program with administrator permissions"), nil)
+				ErrWin(
+					app,
+					errors.New(
+						"sudo not detected!\nRestart the program with administrator permissions",
+					),
+					nil,
+				)
 				return
 			}
 		}
@@ -141,7 +153,7 @@ func Init() {
 			return
 		}
 		if editedTextScoop.Text == "" || editedTextScoop.Text == "<nil>" {
-			ErrWin(app, errors.New("Scoop package list is empty"), nil)
+			ErrWin(app, errors.New("scoop package list is empty"), nil)
 			return
 		}
 		if !core.CheckScoop() {
@@ -211,7 +223,10 @@ func Init() {
 }
 
 // Internal functions
-func saveText(chocoText, scoopText string, chocoVerbose, chocoForce, chocoUpgrade, scoopUpgrade bool) {
+func saveText(
+	chocoText, scoopText string,
+	chocoVerbose, chocoForce, chocoUpgrade, scoopUpgrade bool,
+) {
 	yamlData := core.Yamlfile{}
 
 	// Set choco values

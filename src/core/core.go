@@ -20,8 +20,9 @@ import (
 )
 
 var (
-	Version string = "v2.2"
-	Red            = color.FgRed.Render
+	checkVarBool        = true
+	Version      string = "v2.2"
+	Red                 = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
 	linuxCH        = CheckOS()
@@ -74,7 +75,7 @@ func GetYamldata() Yamlfile {
 
 func CheckOS() error {
 	if runtime.GOOS == "linux" {
-		return errors.New("You're on linux")
+		return errors.New("you're on linux")
 	} else {
 		return nil
 	}
@@ -140,7 +141,7 @@ func ScoopPkgInstall(optArsg ...string) error {
 		return errors.New("no package for scoop written in " + ConfigFilename)
 	}
 	if IsAdmin {
-		return errors.New("Scoop must be run without administrator permissions")
+		return errors.New("scoop must be run without administrator permissions")
 	}
 	if strings.Contains(data.Scoop, "np") {
 		err := ScoopBucketInstall("nonportable")
@@ -183,7 +184,7 @@ func ChocoPkgInstall(args ...string) error {
 		checksudo, sudotype = CheckSudo()
 		if !checksudo {
 			color.Red.Println("sudo or gsudo not detected.")
-			return errors.New("sudo or gsudo not detected.")
+			return errors.New("sudo or gsudo not detected")
 		}
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
@@ -193,7 +194,12 @@ func ChocoPkgInstall(args ...string) error {
 		color.Yellow.Println("Using " + sudotype)
 	}
 	if args[2] == "upgrade" {
-		command = fmt.Sprintf("%vchoco upgrade -y %v %v", sudotype, fmt.Sprintf("%v %v", args[1], args[0]), data.Choco)
+		command = fmt.Sprintf(
+			"%vchoco upgrade -y %v %v",
+			sudotype,
+			fmt.Sprintf("%v %v", args[1], args[0]),
+			data.Choco,
+		)
 	} else {
 		command = fmt.Sprintf("%vchoco install -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
 	}
@@ -242,7 +248,9 @@ func InstallScoop() error {
 	err1 := tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
 	err2 := tempshell.Cmd("irm get.scoop.sh | iex")
 	if err1 != nil || err2 != nil {
-		return errors.New(fmt.Sprintf("Error installing scoop:\nCmd1:%v\nCmd2:%v", err1.Error(), err2.Error()))
+		return fmt.Errorf(
+			fmt.Sprintf("Error installing scoop:\nCmd1:%v\nCmd2:%v", err1.Error(), err2.Error()),
+		)
 	}
 	err := ScoopBucketInstall("extras")
 	if err != nil {
@@ -267,22 +275,22 @@ func InstallChoco() error {
 func CheckScoop() bool {
 	_, err := sh.Out("scoop --version")
 	if err != nil {
-		return false
+		return !checkVarBool
 	}
-	return true
+	return checkVarBool
 }
 
 func CheckChoco() bool {
 	_, err := sh.Out("choco --version")
 	if err != nil {
-		return false
+		return !checkVarBool
 	}
-	return true
+	return checkVarBool
 }
 
 func CheckSudo_External() error {
 	if check, _ := CheckSudo(); !check {
-		return errors.New("Sudo not detected!")
+		return errors.New("sudo not detected")
 	}
 	return nil
 }
