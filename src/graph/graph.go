@@ -34,6 +34,7 @@ var (
 	InstallICON  fyne.Resource
 	SaveICON     fyne.Resource
 	RestartICON  fyne.Resource
+	InfoICON     fyne.Resource
 )
 
 func Init() {
@@ -59,6 +60,7 @@ func Init() {
 		InstallICON = icon.InstallICON
 		SaveICON = icon.SaveICON
 		RestartICON = icon.RestartICON
+		InfoICON = icon.InfoICON
 	}()
 
 	if len(os.Args) > 1 {
@@ -349,7 +351,7 @@ func RestartWindow(app fyne.App, restartTXT string) {
 	label := widget.NewLabel(restartTXT)
 	label.TextStyle.Bold = true
 	label.Alignment = fyne.TextAlignCenter
-
+	InfoWindow(app, "You need to restart the program!")
 	restartButton := widget.NewButtonWithIcon("Restart", RestartICON, func() {
 		app.Quit()
 	})
@@ -363,6 +365,7 @@ func RestartWindow(app fyne.App, restartTXT string) {
 
 func InfoWindow(app fyne.App, text string) {
 	window := app.NewWindow("Info")
+	window.SetIcon(InfoICON)
 
 	InfoLabel := widget.NewLabel(text)
 	InfoLabel.Alignment = fyne.TextAlignCenter
