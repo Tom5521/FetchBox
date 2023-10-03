@@ -25,14 +25,17 @@ func main() {
 }
 
 func TermMode() {
+	var (
+		install = core.Install{}
+	)
 	switch os.Args[1] {
 	case "scoop":
-		err := core.ScoopPkgInstall()
+		err := install.ScoopPkgInstall()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 	case "choco":
-		err := core.ChocoPkgInstall()
+		err := install.ChocoPkgInstall()
 		if err != nil {
 			fmt.Println(err.Error())
 		}

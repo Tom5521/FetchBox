@@ -17,7 +17,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string)) { // This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
+func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string)) {
+	// This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
 	restartButtom := widget.NewButton("Restart", func() {
@@ -54,10 +55,8 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 func ShowIconsWin(app fyne.App) {
 	w := app.NewWindow("IconsPreview")
 
-	size := fyne.NewSize(64, 64)
-
 	AppIcon := canvas.NewImageFromResource(icon.AppICON)
-	AppIcon.Resize(size)
+	AppIcon.FillMode = canvas.ImageFillOriginal
 
 	icon1 := canvas.NewImageFromResource(icon.DevICON_Dark)
 	icon2 := canvas.NewImageFromResource(icon.DownloadICON_Dark)
@@ -67,8 +66,6 @@ func ShowIconsWin(app fyne.App) {
 	icon6 := canvas.NewImageFromResource(icon.RestartICON_Dark)
 	icon14 := canvas.NewImageFromResource(icon.InfoICON_Dark)
 
-	//icon1.Resize(size)
-	//icon1.MinSize().Width = 64
 	icon1.FillMode = canvas.ImageFillOriginal
 	icon2.FillMode = canvas.ImageFillOriginal
 	icon3.FillMode = canvas.ImageFillOriginal

@@ -27,6 +27,7 @@ var (
 	Yellow         = color.FgYellow.Render
 	linuxCH        = CheckOS()
 	ConfigFilename = "wpa-config.yml"
+	sudotype       string
 	sh             = func() commands.Sh {
 		internal_sh := commands.Sh{}
 		internal_sh.RunWithShell = false
@@ -38,17 +39,41 @@ var (
 	}()
 )
 
+type Install struct {
+	Choco struct {
+		Verbose bool
+		Force   bool
+		Upgrade bool
+	}
+	Scoop struct {
+		Upgrade bool
+	}
+}
+
+type Uninstall struct {
+	Choco struct {
+		Verbose bool
+		Force   bool
+	}
+}
+
 type Yamlfile struct {
-	Scoop        string `yaml:"scoop"`
-	Choco        string `yaml:"choco"`
-	ChocoConfigs struct {
+	Scoop_Install         string `yaml:"Scoop-Install"`
+	Choco_Install         string `yaml:"Choco-Install"`
+	Scoop_Uninstall       string `yaml:"Scoop-Uninstall"`
+	Choco_Uninstall       string `yaml:"Choco-Uninstall"`
+	Choco_Install_Configs struct {
 		Verbose bool `yaml:"verbose"`
 		Force   bool `yaml:"force"`
 		Upgrade bool `yaml:"upgrade"`
-	} `yaml:"Choco_configs"`
-	ScoopConfigs struct {
+	} `yaml:"Choco Install Configs"`
+	Scoop_Install_Configs struct {
 		Upgrade bool `yaml:"upgrade"`
-	} `yaml:"Scoop_Configs"`
+	} `yaml:"Scoop Install Configs"`
+	Choco_Uninstall_Configs struct {
+		Verbose bool `yaml:"verbose"`
+		Force   bool `yaml:"force"`
+	} `yaml:"Choco uninstall Configs"`
 }
 
 func GetYamldata() Yamlfile {
@@ -130,51 +155,66 @@ func ScoopBucketInstall(bucket string) error {
 	color.Green.Printf("%v bucket added!", bucket)
 	return nil
 }
-func ScoopPkgInstall(optArsg ...string) error {
+func (i Install) ScoopPkgInstall() error {
 	var err error
 	data := GetYamldata()
 	if linuxCH != nil {
 		return linuxCH
 	}
-	if data.Scoop == "" {
-		color.Red.Println("No package for scoop written in " + ConfigFilename)
+	if data.Scoop_Install == "" {
 		return errors.New("no package for scoop written in " + ConfigFilename)
 	}
 	if IsAdmin {
 		return errors.New("scoop must be run without administrator permissions")
 	}
-	if strings.Contains(data.Scoop, "np") {
+	if strings.Contains(data.Scoop_Install, "np") {
 		err := ScoopBucketInstall("nonportable")
 		if err != nil {
 			return err
 		}
 	}
-	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", data.Scoop)
-	if optArsg[0] != "upgrade" {
-		err = sh.Cmd(fmt.Sprintf("scoop install %v %v", strings.Join(optArsg, " "), data.Scoop))
+	fmt.Printf(Yellow("Installing with scoop ")+"%v\n", data.Scoop_Install)
+	var (
+		mode string
+	)
+	if i.Scoop.Upgrade {
+		mode = "upgrade"
 	} else {
-		err = sh.Cmd(fmt.Sprintf("scoop upgrade %v %v", strings.Join(optArsg[0:], " "), data.Scoop))
+		mode = "install"
 	}
+	command := fmt.Sprintf("scoop %v %v", mode, data.Scoop_Install)
+	err = sh.Cmd(command)
 	if err != nil {
-		color.Red.Println("Prossess Completed with errors.")
 		return err
-	} else {
-		color.Green.Println("Prosess Completed without errors!!!")
-		return nil
 	}
+	return nil
 }
 
-func ChocoPkgInstall(args ...string) error {
+func (i Install) ChocoPkgInstall() error {
 	var (
-		checksudo         bool
-		sudotype, command string
-		data              = GetYamldata()
+		checksudo                               bool
+		sudotype, command, mode, force, verbose string
+		data                                    = GetYamldata()
 	)
+
+	if i.Choco.Upgrade {
+		mode = "upgrade"
+	} else {
+		mode = "install"
+	}
+
+	if i.Choco.Force {
+		force = "-f"
+	}
+
+	if i.Choco.Verbose {
+		verbose = "-v"
+	}
+
 	if linuxCH != nil {
 		return linuxCH
 	}
-	if data.Choco == "" {
-		color.Red.Println("No package for choco written in " + ConfigFilename)
+	if data.Choco_Install == "" {
 		return errors.New("No package for choco written in " + ConfigFilename)
 	}
 
@@ -183,34 +223,22 @@ func ChocoPkgInstall(args ...string) error {
 		color.Yellow.Println("Checking sudo or gsudo...")
 		checksudo, sudotype = CheckSudo()
 		if !checksudo {
-			color.Red.Println("sudo or gsudo not detected.")
 			return errors.New("sudo or gsudo not detected")
 		}
 	} else if checksudo {
 		color.Yellow.Println("Running as administrator")
 	}
-	fmt.Printf(Yellow("Installing with choco ")+"%v\n", data.Choco)
+	fmt.Printf(Yellow("Installing with choco ")+"%v\n", data.Choco_Install)
 	if checksudo {
 		color.Yellow.Println("Using " + sudotype)
 	}
-	if args[2] == "upgrade" {
-		command = fmt.Sprintf(
-			"%vchoco upgrade -y %v %v",
-			sudotype,
-			fmt.Sprintf("%v %v", args[1], args[0]),
-			data.Choco,
-		)
-	} else {
-		command = fmt.Sprintf("%vchoco install -y %v %v", sudotype, strings.Join(args, " "), data.Choco)
-	}
+	command = fmt.Sprintf("%vchoco %v %v -y %v %v", sudotype, mode, force, verbose, data.Choco_Install)
 	err := sh.Cmd(command)
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 		return err
-	} else {
-		color.Green.Println("Prosess Completed without errors!!!")
-		return nil
 	}
+	return nil
 }
 
 func CheckSudo() (bool, string) {
@@ -291,6 +319,44 @@ func CheckChoco() bool {
 func CheckSudo_External() error {
 	if check, _ := CheckSudo(); !check {
 		return errors.New("sudo not detected")
+	}
+	return nil
+}
+
+func (u Uninstall) UninstallScoopPkgs() error {
+	var data = GetYamldata()
+	command := fmt.Sprintf("scoop uninstall %v", data.Scoop_Uninstall)
+	err := sh.Cmd(command)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u Uninstall) UninstallChocoPkgs() error {
+	var (
+		data      = GetYamldata()
+		force     string
+		verbose   string
+		checksudo bool
+	)
+	if u.Choco.Force {
+		force = "-f"
+	}
+	if u.Choco.Verbose {
+		verbose = "-v"
+	}
+	if !IsAdmin {
+		checksudo, sudotype = CheckSudo()
+		if !checksudo {
+			return errors.New("sudo or gsudo not detected")
+		}
+	}
+
+	command := fmt.Sprintf("%vchoco uninstall -y %v %v %v ", sudotype, force, verbose, data.Choco_Uninstall)
+	err := sh.Cmd(command)
+	if err != nil {
+		return err
 	}
 	return nil
 }
