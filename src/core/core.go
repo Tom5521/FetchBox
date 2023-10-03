@@ -101,9 +101,8 @@ func GetYamldata() Yamlfile {
 func CheckOS() error {
 	if runtime.GOOS == "linux" {
 		return errors.New("you're on linux")
-	} else {
-		return nil
 	}
+	return nil
 }
 
 func NewYamlFile() {
@@ -123,17 +122,15 @@ var IsAdmin bool = func() bool {
 	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
 	if err != nil {
 		return false
-	} else {
-		return true
 	}
+	return true
 }()
 
 func CheckDir(dir string) bool {
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		return false
-	} else {
-		return true
 	}
+	return true
 }
 
 func ScoopBucketInstall(bucket string) error {
