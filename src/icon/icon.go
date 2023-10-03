@@ -7,7 +7,7 @@
 package icon
 
 import (
-	"errors"
+	"Windows-package-autoinstaller/src/bundled"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -15,22 +15,22 @@ import (
 
 var (
 	// Dark Icons
-	DevICON_Dark      fyne.Resource
-	DownloadICON_Dark fyne.Resource
-	ErrorICON_Dark    fyne.Resource
-	InstallICON_Dark  fyne.Resource
-	SaveICON_Dark     fyne.Resource
-	RestartICON_Dark  fyne.Resource
-	InfoICON_Dark     fyne.Resource
+	DevICON_Dark      fyne.Resource = bundled.Dev_Dark
+	DownloadICON_Dark fyne.Resource = bundled.Download_Dark
+	ErrorICON_Dark    fyne.Resource = bundled.Error_Dark
+	InstallICON_Dark  fyne.Resource = bundled.Install_Dark
+	SaveICON_Dark     fyne.Resource = bundled.Save_Dark
+	RestartICON_Dark  fyne.Resource = bundled.Restart_Dark
+	InfoICON_Dark     fyne.Resource = bundled.Info_Dark
 
 	// Light Icons
-	DevICON_Light      fyne.Resource
-	DownloadICON_Light fyne.Resource
-	ErrorICON_Light    fyne.Resource
-	InstallICON_Light  fyne.Resource
-	SaveICON_Light     fyne.Resource
-	RestartICON_Light  fyne.Resource
-	InfoICON_Light     fyne.Resource
+	DevICON_Light      fyne.Resource = bundled.Dev_Light
+	DownloadICON_Light fyne.Resource = bundled.Download_Light
+	ErrorICON_Light    fyne.Resource = bundled.Error_Light
+	InstallICON_Light  fyne.Resource = bundled.Install_Light
+	SaveICON_Light     fyne.Resource = bundled.Save_Light
+	RestartICON_Light  fyne.Resource = bundled.Restart_Light
+	InfoICON_Light     fyne.Resource = bundled.Info_Light
 
 	// Themed Icons
 	DevICON      fyne.Resource
@@ -42,82 +42,9 @@ var (
 	InfoICON     fyne.Resource
 
 	// No-Theme Icons
-	AppICON         fyne.Resource
-	PlaceholderICON fyne.Resource
+	AppICON         fyne.Resource = bundled.App
+	PlaceholderICON fyne.Resource = bundled.Placeholder
 )
-
-func LoadResource(app fyne.App, Filename string) (fyne.Resource, error) {
-	ret, err := fyne.LoadResourceFromPath(Filename)
-	if err != nil {
-		return PlaceholderICON, errors.New("Error loading " + Filename + "resource")
-	}
-	return ret, nil
-}
-
-func LoadIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
-	var err error
-
-	PlaceholderICON, err = LoadResource(app, "./Assets/Placeholder.png")
-	if err != nil {
-		errWin(app, err, nil)
-	}
-	AppICON, err = LoadResource(app, "./Assets/Icon.png")
-	if err != nil {
-		errWin(app, err, nil)
-	}
-
-	icons := []string{"Dev.png", "Install.png", "Download.png", "Error.png", "Save.png", "Restart.png", "Info.png"}
-
-	// Load dark icons
-	for _, name := range icons {
-		path := "./Assets/Icons-Dark/" + name
-		icon, err := LoadResource(app, path)
-		if err != nil {
-			errWin(app, err, nil)
-		}
-		switch name {
-		case "Dev.png":
-			DevICON_Dark = icon
-		case "Install.png":
-			InstallICON_Dark = icon
-		case "Download.png":
-			DownloadICON_Dark = icon
-		case "Error.png":
-			ErrorICON_Dark = icon
-		case "Save.png":
-			SaveICON_Dark = icon
-		case "Restart.png":
-			RestartICON_Dark = icon
-		case "Info.png":
-			InfoICON_Dark = icon
-		}
-	}
-
-	// Load light icons
-	for _, name := range icons {
-		path := "./Assets/Icons-Light/" + name
-		icon, err := LoadResource(app, path)
-		if err != nil {
-			errWin(app, err, nil)
-		}
-		switch name {
-		case "Dev.png":
-			DevICON_Light = icon
-		case "Install.png":
-			InstallICON_Light = icon
-		case "Download.png":
-			DownloadICON_Light = icon
-		case "Error.png":
-			ErrorICON_Light = icon
-		case "Save.png":
-			SaveICON_Light = icon
-		case "Restart.png":
-			RestartICON_Light = icon
-		case "Info.png":
-			InfoICON_Light = icon
-		}
-	}
-}
 
 func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 	if os.Getenv("FYNE_THEME") == "light" {

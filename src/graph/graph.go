@@ -26,8 +26,7 @@ var (
 	MainSize    = fyne.NewSize(344, 237)
 	ErrSize     = fyne.NewSize(400, 80)
 	InstallSize = fyne.NewSize(400, 70)
-)
-var (
+
 	DevICON      fyne.Resource
 	DownloadICON fyne.Resource
 	ErrorICON    fyne.Resource
@@ -52,7 +51,6 @@ func Init() {
 	// Load the Icons and set the theme
 
 	func() {
-		icon.LoadIcons(app, ErrWin)
 		icon.SetThemeIcons(app, ErrWin)
 		DevICON = icon.DevICON
 		DownloadICON = icon.DownloadICON
@@ -211,13 +209,18 @@ func Init() {
 			installScoopPackBtn,
 		),
 	)
-	tabs := container.NewAppTabs(
+	InstallTabs := container.NewAppTabs(
 		container.NewTabItem("Choco", chocoTab),
 		container.NewTabItem("Scoop", scoopTab),
 	)
 
+	GeneralTabs := container.NewAppTabs(
+		container.NewTabItem("Install", InstallTabs),
+		container.NewTabItem("Uninstall", label),
+	)
+
 	content := container.NewVBox(
-		tabs,
+		GeneralTabs,
 	)
 
 	window.SetContent(content)
