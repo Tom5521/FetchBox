@@ -7,7 +7,6 @@
 package icon
 
 import (
-	"Windows-package-autoinstaller/src/bundled"
 	"os"
 
 	"fyne.io/fyne/v2"
@@ -15,22 +14,22 @@ import (
 
 var (
 	// Dark Icons
-	DevICON_Dark      fyne.Resource = bundled.Dev_Dark
-	DownloadICON_Dark fyne.Resource = bundled.Download_Dark
-	ErrorICON_Dark    fyne.Resource = bundled.Error_Dark
-	InstallICON_Dark  fyne.Resource = bundled.Install_Dark
-	SaveICON_Dark     fyne.Resource = bundled.Save_Dark
-	RestartICON_Dark  fyne.Resource = bundled.Restart_Dark
-	InfoICON_Dark     fyne.Resource = bundled.Info_Dark
+	DevICON_Dark      fyne.Resource = Dev_Dark
+	DownloadICON_Dark fyne.Resource = Download_Dark
+	ErrorICON_Dark    fyne.Resource = Error_Dark
+	InstallICON_Dark  fyne.Resource = Install_Dark
+	SaveICON_Dark     fyne.Resource = Save_Dark
+	RestartICON_Dark  fyne.Resource = Restart_Dark
+	InfoICON_Dark     fyne.Resource = Info_Dark
 
 	// Light Icons
-	DevICON_Light      fyne.Resource = bundled.Dev_Light
-	DownloadICON_Light fyne.Resource = bundled.Download_Light
-	ErrorICON_Light    fyne.Resource = bundled.Error_Light
-	InstallICON_Light  fyne.Resource = bundled.Install_Light
-	SaveICON_Light     fyne.Resource = bundled.Save_Light
-	RestartICON_Light  fyne.Resource = bundled.Restart_Light
-	InfoICON_Light     fyne.Resource = bundled.Info_Light
+	DevICON_Light      fyne.Resource = Dev_Light
+	DownloadICON_Light fyne.Resource = Download_Light
+	ErrorICON_Light    fyne.Resource = Error_Light
+	InstallICON_Light  fyne.Resource = Install_Light
+	SaveICON_Light     fyne.Resource = Save_Light
+	RestartICON_Light  fyne.Resource = Restart_Light
+	InfoICON_Light     fyne.Resource = Info_Light
 
 	// Themed Icons
 	DevICON      fyne.Resource
@@ -42,8 +41,8 @@ var (
 	InfoICON     fyne.Resource
 
 	// No-Theme Icons
-	AppICON         fyne.Resource = bundled.App
-	PlaceholderICON fyne.Resource = bundled.Placeholder
+	AppICON         fyne.Resource = App
+	PlaceholderICON fyne.Resource = Placeholder
 )
 
 func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {

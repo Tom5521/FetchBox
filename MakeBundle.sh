@@ -2,12 +2,12 @@
 
 ReGenerateBundle()
 {
-  fyne bundle --pkg bundled --name "$1" -o ./src/bundled/bundled.go "$2"
+  fyne bundle --pkg icon --name "$1" -o ./src/icon/bundled.go "$2"
 }
 
 AppendBundle ()
 {
-  fyne bundle --pkg bundled --name "$1" -o ./src/bundled/bundled.go -append "$2"
+  fyne bundle --pkg icon --name "$1" -o ./src/icon/bundled.go -append "$2"
 }
 
 
