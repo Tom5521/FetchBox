@@ -1,4 +1,4 @@
-# Windows-package-autoinstaller
+# FetchBox
 
 ![CodeFactor Grade (with branch)](https://img.shields.io/codefactor/grade/github/Tom5521/Windows-package-autoinstaller/dev?label=Code%20Quality%20dev%20branch)
 ![CodeFactor Grade (with branch)](https://img.shields.io/codefactor/grade/github/Tom5521/Windows-package-autoinstaller/master?label=Code%20Quality%20master%20branch)

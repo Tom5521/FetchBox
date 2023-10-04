@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"Windows-package-autoinstaller/src/core"
+	"FetchBox/src/core"
 	"errors"
 	"fmt"
 

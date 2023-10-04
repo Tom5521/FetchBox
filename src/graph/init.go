@@ -13,9 +13,9 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 
-	"Windows-package-autoinstaller/src/core"
-	"Windows-package-autoinstaller/src/dev"
-	"Windows-package-autoinstaller/src/icon"
+	"FetchBox/src/core"
+	"FetchBox/src/dev"
+	"FetchBox/src/icon"
 )
 
 var (
@@ -43,7 +43,7 @@ var (
 
 func Init() {
 	app := app.New()
-	window := app.NewWindow("Windows Package AutoInstaller")
+	window := app.NewWindow("FetchBox")
 	window.Resize(MainSize)
 	window.SetMaster()
 	window.SetIcon(icon.AppICON)

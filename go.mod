@@ -1,4 +1,4 @@
-module Windows-package-autoinstaller
+module FetchBox
 
 go 1.20
 

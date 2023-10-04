@@ -5,7 +5,7 @@
 - ~~Patch uninstall check save bug~~
 - ~~Add uninstall icon~~
 - Add progress window in uninstall tab
-- Rename the proyect to "FetchBox"
+- ~~Rename the proyect to "FetchBox"~~
 - Set uninstall icon
 - Improve error system in new funtions in core lib
 - Relativize InstallWindow func

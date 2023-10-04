@@ -24,7 +24,7 @@ var (
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
 	linuxCH        = CheckOS()
-	ConfigFilename = "wpa-config.yml"
+	ConfigFilename = "FetchBox-conf.yml"
 	sudotype       string
 	sh             = func() commands.Sh {
 		internal_sh := commands.Sh{}

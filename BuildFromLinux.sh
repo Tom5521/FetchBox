@@ -8,4 +8,4 @@ if [ ! -d "builds" ]; then
   mkdir builds
 fi
 
-cp -rf ./fyne-cross/bin/windows-amd64/WPA.exe ./builds/WPA.exe
+cp -rf ./fyne-cross/bin/windows-amd64/FetchBox.exe ./builds/FetchBox.exe

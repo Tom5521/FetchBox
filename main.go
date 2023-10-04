@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"Windows-package-autoinstaller/src/core"
-	"Windows-package-autoinstaller/src/graph"
+	"FetchBox/src/core"
+	"FetchBox/src/graph"
 )
 
 func main() {
