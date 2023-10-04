@@ -17,15 +17,13 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	editedTextChocoUninstall.SetText(data.Choco_Uninstall)
 
 	verboseUninstallChocoCheck := widget.NewCheck("Verbose", func(check bool) {
-		data.Choco_Uninstall_Configs.Verbose = check
 		uninstall.Choco.Verbose = check
 	})
 	if data.Choco_Uninstall_Configs.Verbose {
 		verboseUninstallChocoCheck.SetChecked(true)
 	}
 	forceUninstallChocoCheck := widget.NewCheck("Force", func(check bool) {
-		data.Choco_Uninstall_Configs.Force = check
-		uninstall.Choco.Force = data.Choco_Uninstall_Configs.Force
+		uninstall.Choco.Force = check
 	})
 	if data.Choco_Uninstall_Configs.Force {
 		forceUninstallChocoCheck.SetChecked(true)
@@ -51,8 +49,13 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	// Both Interface
 
 	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
+		// Set to save the multine edited text
 		data.Scoop_Uninstall = editedTextScoopUninstall.Text
 		data.Choco_Uninstall = editedTextChocoUninstall.Text
+		// Save the choco checks
+		data.Choco_Uninstall_Configs.Force = forceUninstallChocoCheck.Checked
+		data.Choco_Uninstall_Configs.Verbose = verboseUninstallChocoCheck.Checked
+		// Scoop no have checks :/
 		saveText()
 	})
 
@@ -91,44 +94,43 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 func InstallTab(app fyne.App) *container.AppTabs {
 	// First label
 	chocoLabel := widget.NewLabel("Choco packages to install:")
-	chocoLabel.TextStyle.Bold = true
+	chocoLabel.TextStyle.Bold = true // Set bold to label
 	// Multi Line Entry
 	editedTextChoco := widget.NewMultiLineEntry()
 	editedTextChoco.SetText(fmt.Sprintf("%v", data.Choco_Install)) // Set yaml data
 	// CheckBoxs
 	chocoForceCheckBox1 := widget.NewCheck("Force", func(check bool) {
-		data.Choco_Install_Configs.Force = check
-		install.Choco.Force = check
+		install.Choco.Force = check // Install choco parameters <- check value
 	})
-	if data.Choco_Install_Configs.Force {
+	if data.Choco_Install_Configs.Force { // Set the variable in accordance with the yaml setting
 		chocoForceCheckBox1.SetChecked(true) // Set yaml config
 	}
 	chocoVerboseCheckBox := widget.NewCheck("Verbose", func(check bool) {
-		data.Choco_Install_Configs.Verbose = check
-		install.Choco.Verbose = check
+		install.Choco.Verbose = check // <- choco verbose parameter <- check value
 	})
-	if data.Choco_Install_Configs.Verbose {
+	if data.Choco_Install_Configs.Verbose { // Set the variable in accordance with the yaml setting
 		chocoVerboseCheckBox.SetChecked(true) // set yaml config
 	}
 	chocoUpgradeCheckBox := widget.NewCheck("Upgrade", func(check bool) {
-		if check {
-			data.Choco_Install_Configs.Upgrade = check
-			install.Choco.Upgrade = check
-		}
+		install.Choco.Upgrade = check // <- choco upgrade parameter <- check value
+
 	})
-	if data.Choco_Install_Configs.Upgrade {
+	if data.Choco_Install_Configs.Upgrade { //Set the variable in accordance with the yaml setting
 		chocoUpgradeCheckBox.SetChecked(true) // Set yaml config
 	}
+
+	// Set button for install with icon
 	installChocoPackBtn := widget.NewButtonWithIcon("Install Choco packages", DownloadICON, func() {
-		if err := core.CheckOS(); err != nil {
+		if err := core.CheckOS(); err != nil { // Check the OS for show error in linux
 			ErrWin(app, err, nil)
 			return
 		}
-		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" {
+
+		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" { // Check the text for nil values
 			ErrWin(app, errors.New("choco package list is empty"), nil)
 			return
 		}
-		if !core.IsAdmin {
+		if !core.IsAdmin { // Check admin permissions
 			err := core.CheckSudo_External()
 			if err != nil {
 				ErrWin(
@@ -141,49 +143,63 @@ func InstallTab(app fyne.App) *container.AppTabs {
 				return
 			}
 		}
-		if !core.CheckChoco() {
+		if !core.CheckChoco() { // Check Choco package manager
 			InstallPkgManagerWin(app, "Choco", core.InstallChoco)
 			return
 		}
-		InstallWindow(app, "Choco", func() error {
+		InstallWindow(app, "Choco", func() error { // Install window with install function
 			err := install.ChocoPkgInstall()
 			return err
 		})
 	})
 	// Scoop Interface
 	scoopLabel := widget.NewLabel("Scoop packages to install:")
-	scoopLabel.TextStyle.Bold = true
+	scoopLabel.TextStyle.Bold = true // Set label text to bold style
+	// Declare multine entry
 	editedTextScoop := widget.NewMultiLineEntry()
-	editedTextScoop.SetText(data.Scoop_Install)
-	scoopUpgradeCheckButton := widget.NewCheck("Upgrade", func(check bool) {
-		data.Scoop_Install_Configs.Upgrade = check
-		install.Scoop.Upgrade = check
+	editedTextScoop.SetText(data.Scoop_Install) // Set multine entry with yaml data
+
+	// Checks
+	scoopUpgradeCheckButton := widget.NewCheck("Upgrade", func(check bool) { // Scoop Upgrade check
+		install.Scoop.Upgrade = check // Set upgrade scoop parameter
 	})
-	if data.Scoop_Install_Configs.Upgrade {
+	//
+	if data.Scoop_Install_Configs.Upgrade { //Set the variable in accordance with the yaml setting
 		scoopUpgradeCheckButton.SetChecked(true)
 	}
+	// Scoop install init button with icon
 	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", DownloadICON, func() {
-		if err := core.CheckOS(); err != nil {
+		if err := core.CheckOS(); err != nil { // Check the OS
 			ErrWin(app, err, nil)
 			return
 		}
+		// Check for nil string values
 		if editedTextScoop.Text == "" || editedTextScoop.Text == "<nil>" {
 			ErrWin(app, errors.New("scoop package list is empty"), nil)
 			return
 		}
+		// Check if scoop is installed
 		if !core.CheckScoop() {
 			InstallPkgManagerWin(app, "Scoop", core.InstallScoop)
 			return
 		}
+		// Init install window
 		InstallWindow(app, "Scoop", func() error {
 			err := install.ScoopPkgInstall()
 			return err
 		})
 	})
 
+	// Declare button for save the configs
 	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
 		data.Choco_Install = editedTextChoco.Text
 		data.Scoop_Install = editedTextScoop.Text
+		// Set the choco checks
+		data.Choco_Install_Configs.Verbose = chocoVerboseCheckBox.Checked
+		data.Choco_Install_Configs.Force = chocoForceCheckBox1.Checked
+		data.Choco_Install_Configs.Upgrade = chocoUpgradeCheckBox.Checked
+		// Set the scoop checks
+		data.Scoop_Install_Configs.Upgrade = scoopUpgradeCheckButton.Checked
 		saveText()
 	})
 
