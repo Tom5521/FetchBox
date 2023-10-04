@@ -28,8 +28,12 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	if data.Choco_Uninstall_Configs.Force {
 		forceUninstallChocoCheck.SetChecked(true)
 	}
-	chocoUninstallButton := widget.NewButton("Uninstall Packages", func() {
-		err := uninstall.UninstallChocoPkgs()
+	chocoUninstallButton := widget.NewButtonWithIcon("Uninstall Packages", UninstallICON, func() {
+		err := basicChocoCheck(app, editedTextChocoUninstall.Text)
+		if err != nil {
+			return
+		}
+		err = uninstall.UninstallChocoPkgs()
 		if err != nil {
 			ErrWin(app, err, nil)
 		}
@@ -39,7 +43,7 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	scoopLabelUtab.TextStyle.Bold = true
 	editedTextScoopUninstall := widget.NewMultiLineEntry()
 	editedTextScoopUninstall.SetText(data.Scoop_Uninstall)
-	scoopUninstallButton := widget.NewButton("Uninstall packages", func() {
+	scoopUninstallButton := widget.NewButtonWithIcon("Uninstall packages", UninstallICON, func() {
 		err := uninstall.UninstallScoopPkgs()
 		if err != nil {
 			ErrWin(app, err, nil)
@@ -121,30 +125,8 @@ func InstallTab(app fyne.App) *container.AppTabs {
 
 	// Set button for install with icon
 	installChocoPackBtn := widget.NewButtonWithIcon("Install Choco packages", DownloadICON, func() {
-		if err := core.CheckOS(); err != nil { // Check the OS for show error in linux
-			ErrWin(app, err, nil)
-			return
-		}
-
-		if editedTextChoco.Text == "" || editedTextChoco.Text == "<nil>" { // Check the text for nil values
-			ErrWin(app, errors.New("choco package list is empty"), nil)
-			return
-		}
-		if !core.IsAdmin { // Check admin permissions
-			err := core.CheckSudo_External()
-			if err != nil {
-				ErrWin(
-					app,
-					errors.New(
-						"sudo not detected!\nRestart the program with administrator permissions",
-					),
-					nil,
-				)
-				return
-			}
-		}
-		if !core.CheckChoco() { // Check Choco package manager
-			InstallPkgManagerWin(app, "Choco", core.InstallChoco)
+		err := basicChocoCheck(app, editedTextChoco.Text)
+		if err != nil {
 			return
 		}
 		InstallWindow(app, "Choco", func() error { // Install window with install function
@@ -213,8 +195,6 @@ func InstallTab(app fyne.App) *container.AppTabs {
 		container.NewHBox(
 			chocoVerboseCheckBox,
 			chocoForceCheckBox1,
-		),
-		container.NewHBox(
 			chocoUpgradeCheckBox,
 		),
 		container.NewHBox(

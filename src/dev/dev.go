@@ -65,6 +65,7 @@ func ShowIconsWin(app fyne.App) {
 	icon5 := canvas.NewImageFromResource(icon.SaveICON_Dark)
 	icon6 := canvas.NewImageFromResource(icon.RestartICON_Dark)
 	icon14 := canvas.NewImageFromResource(icon.InfoICON_Dark)
+	icon15 := canvas.NewImageFromResource(icon.UninstallICON_Dark)
 
 	icon1.FillMode = canvas.ImageFillOriginal
 	icon2.FillMode = canvas.ImageFillOriginal
@@ -80,6 +81,7 @@ func ShowIconsWin(app fyne.App) {
 	icon11 := canvas.NewImageFromResource(icon.SaveICON_Light)
 	icon12 := canvas.NewImageFromResource(icon.RestartICON_Light)
 	icon13 := canvas.NewImageFromResource(icon.InfoICON_Light)
+	icon16 := canvas.NewImageFromResource(icon.UninstallICON_Light)
 
 	icon7.FillMode = canvas.ImageFillOriginal
 	icon8.FillMode = canvas.ImageFillOriginal
@@ -90,6 +92,8 @@ func ShowIconsWin(app fyne.App) {
 
 	icon13.FillMode = canvas.ImageFillOriginal
 	icon14.FillMode = canvas.ImageFillOriginal
+	icon15.FillMode = canvas.ImageFillOriginal
+	icon16.FillMode = canvas.ImageFillOriginal
 
 	contentH1 := container.NewHBox(
 		icon1,
@@ -99,6 +103,7 @@ func ShowIconsWin(app fyne.App) {
 		icon5,
 		icon6,
 		icon14,
+		icon15,
 	)
 
 	contentH2 := container.NewHBox(
@@ -109,6 +114,7 @@ func ShowIconsWin(app fyne.App) {
 		icon11,
 		icon12,
 		icon13,
+		icon16,
 	)
 	w.SetContent(container.NewVBox(contentH1, contentH2, AppIcon))
 	w.Show()

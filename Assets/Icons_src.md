@@ -27,9 +27,13 @@
 
 ./Icons-\*/Dev.png from [Font Awesome Icons](https://iconduck.com/sets/font-awesome-icons)
 
-![Info icon](./Icons-Light/Info.png)
+![Info Icon](./Icons-Light/Info.png)
 
 ./Icons-\*/Info.png from [Google Material Design Icons](https://iconduck.com/sets/google-material-design-icons)
+
+![Uninstall Icon](./Icons-Light/Uninstall.png)
+
+./Icons-\*/Uninstall.png from [Clarity Project Icons](https://iconduck.com/sets/clarity-project-icons)
 
 ![Placeholder](./Placeholder.png)
 

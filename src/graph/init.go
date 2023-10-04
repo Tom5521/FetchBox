@@ -25,13 +25,14 @@ var (
 	InstallSize = fyne.NewSize(400, 70)
 
 	// Declare Icons
-	DevICON      fyne.Resource
-	DownloadICON fyne.Resource
-	ErrorICON    fyne.Resource
-	InstallICON  fyne.Resource
-	SaveICON     fyne.Resource
-	RestartICON  fyne.Resource
-	InfoICON     fyne.Resource
+	DevICON       fyne.Resource
+	DownloadICON  fyne.Resource
+	ErrorICON     fyne.Resource
+	InstallICON   fyne.Resource
+	SaveICON      fyne.Resource
+	RestartICON   fyne.Resource
+	InfoICON      fyne.Resource
+	UninstallICON fyne.Resource
 
 	// Declare structures
 	install   = core.Install{}
@@ -58,6 +59,7 @@ func Init() {
 		SaveICON = icon.SaveICON
 		RestartICON = icon.RestartICON
 		InfoICON = icon.InfoICON
+		UninstallICON = icon.UninstallICON
 	}()
 
 	if len(os.Args) > 1 {
