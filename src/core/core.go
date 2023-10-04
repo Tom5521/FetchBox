@@ -19,9 +19,8 @@ import (
 )
 
 var (
-	checkVarBool        = true
-	Version      string = "v2.2"
-	Red                 = color.FgRed.Render
+	Version string = "v2.2"
+	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
 	linuxCH        = CheckOS()
@@ -100,8 +99,7 @@ func NewYamlFile() {
 }
 
 var IsAdmin bool = func() bool {
-	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
-	if err != nil {
+	if _, err := os.Open("\\\\.\\PHYSICALDRIVE0"); err != nil {
 		return false
 	}
 	return true
@@ -174,19 +172,17 @@ func InstallChoco() error {
 
 // Check if the pkg managers exists
 func CheckScoop() bool {
-	_, err := sh.Out("scoop --version")
-	if err != nil {
-		return !checkVarBool
+	if _, err := sh.Out("scoop --version"); err != nil {
+		return false
 	}
-	return checkVarBool
+	return true
 }
 
 func CheckChoco() bool {
-	_, err := sh.Out("choco --version")
-	if err != nil {
-		return !checkVarBool
+	if _, err := sh.Out("choco --version"); err != nil {
+		return false
 	}
-	return checkVarBool
+	return true
 }
 
 func CheckSudo_External() error {

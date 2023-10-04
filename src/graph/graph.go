@@ -37,12 +37,7 @@ var (
 	install   = core.Install{}
 	uninstall = core.Uninstall{}
 	data      = core.GetYamldata()
-
-	// Declare global var (
-	Scoop_InstallTXT   string
-	Choco_InstallTXT   string
-	Scoop_UninstallTXT string
-	Choco_UninstallTXT string
+	Isdev     = true
 )
 
 func Init() {

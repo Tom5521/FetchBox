@@ -30,10 +30,10 @@ func (u Uninstall) UninstallChocoPkgs() error {
 		checksudo bool
 	)
 	if u.Choco.Force {
-		force = "-f"
+		force = " -f "
 	}
 	if u.Choco.Verbose {
-		verbose = "-v"
+		verbose = "-v "
 	}
 	if !IsAdmin {
 		checksudo, sudotype = CheckSudo()
@@ -42,7 +42,7 @@ func (u Uninstall) UninstallChocoPkgs() error {
 		}
 	}
 
-	command := fmt.Sprintf("%vchoco uninstall -y %v %v %v ", sudotype, force, verbose, data.Choco_Uninstall)
+	command := fmt.Sprintf("%vchoco uninstall -y%v%v %v ", sudotype, force, verbose, data.Choco_Uninstall)
 	err := sh.Cmd(command)
 	if err != nil {
 		return err
