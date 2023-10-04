@@ -23,10 +23,12 @@ import (
 )
 
 var (
+	// Declare sizes
 	MainSize    = fyne.NewSize(344, 237)
 	ErrSize     = fyne.NewSize(400, 80)
 	InstallSize = fyne.NewSize(400, 70)
 
+	// Declare Icons
 	DevICON      fyne.Resource
 	DownloadICON fyne.Resource
 	ErrorICON    fyne.Resource
@@ -35,9 +37,16 @@ var (
 	RestartICON  fyne.Resource
 	InfoICON     fyne.Resource
 
+	// Declare structures
 	install   = core.Install{}
 	uninstall = core.Uninstall{}
 	data      = core.GetYamldata()
+
+	// Declare global var (
+	Scoop_InstallTXT   string
+	Choco_InstallTXT   string
+	Scoop_UninstallTXT string
+	Choco_UninstallTXT string
 )
 
 func Init() {
@@ -66,9 +75,15 @@ func Init() {
 		}
 	}
 
-	// INSTALL TAB
+	GeneralTabs := container.NewAppTabs(
+		container.NewTabItem("Install", InstallTab(app)),
+		container.NewTabItem("Uninstall", UninstallTab(app)),
+	)
 
-	// Choco Interface
+	window.SetContent(GeneralTabs)
+	window.ShowAndRun()
+}
+func InstallTab(app fyne.App) *container.AppTabs {
 	chocoLabel := widget.NewLabel("Choco packages to install:")
 	chocoLabel.TextStyle.Bold = true
 	editedTextChoco := widget.NewMultiLineEntry()
@@ -159,9 +174,50 @@ func Init() {
 			return err
 		})
 	})
-	// UNINSTALL TAB
 
-	// Choco
+	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
+		editedTextChoco.Text = Choco_InstallTXT
+		editedTextScoop.Text = Scoop_InstallTXT
+		saveText()
+	})
+
+	label := widget.NewLabel("Select any option")
+	label.TextStyle.Italic = true
+
+	chocoTab := container.NewVBox(
+		chocoLabel,
+		editedTextChoco,
+		label,
+		container.NewHBox(
+			chocoVerboseCheckBox,
+			chocoForceCheckBox1,
+		),
+		container.NewHBox(
+			chocoUpgradeCheckBox,
+		),
+		container.NewHBox(
+			saveButton,
+			installChocoPackBtn,
+		),
+	)
+	scoopTab := container.NewVBox(
+		scoopLabel,
+		editedTextScoop,
+		label,
+		scoopUpgradeCheckButton,
+		container.NewHBox(
+			saveButton,
+			installScoopPackBtn,
+		),
+	)
+	InstallTabs := container.NewAppTabs(
+		container.NewTabItem("Choco", chocoTab),
+		container.NewTabItem("Scoop", scoopTab),
+	)
+	return InstallTabs
+}
+
+func UninstallTab(app fyne.App) *container.AppTabs {
 	chocoLabelUtab := widget.NewLabel("Choco packages to uninstall")
 	chocoLabelUtab.TextStyle.Bold = true
 	editedTextChocoUninstall := widget.NewMultiLineEntry()
@@ -204,10 +260,9 @@ func Init() {
 	// Both Interface
 
 	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
-		saveText(
-			editedTextChoco.Text,
-			editedTextScoop.Text,
-		)
+		editedTextChocoUninstall.Text = Choco_UninstallTXT
+		editedTextScoopUninstall.Text = Scoop_UninstallTXT
+		saveText()
 	})
 
 	label := widget.NewLabel("Select any option")
@@ -238,64 +293,27 @@ func Init() {
 		container.NewTabItem("Choco", chocoUninstallTab),
 		container.NewTabItem("Scoop", scoopUninstallTab),
 	)
-
-	// Set tabs and windows content
-	chocoTab := container.NewVBox(
-		chocoLabel,
-		editedTextChoco,
-		label,
-		container.NewHBox(
-			chocoVerboseCheckBox,
-			chocoForceCheckBox1,
-		),
-		container.NewHBox(
-			chocoUpgradeCheckBox,
-		),
-		container.NewHBox(
-			saveButton,
-			installChocoPackBtn,
-		),
-	)
-	scoopTab := container.NewVBox(
-		scoopLabel,
-		editedTextScoop,
-		label,
-		scoopUpgradeCheckButton,
-		container.NewHBox(
-			saveButton,
-			installScoopPackBtn,
-		),
-	)
-	InstallTabs := container.NewAppTabs(
-		container.NewTabItem("Choco", chocoTab),
-		container.NewTabItem("Scoop", scoopTab),
-	)
-
-	GeneralTabs := container.NewAppTabs(
-		container.NewTabItem("Install", InstallTabs),
-		container.NewTabItem("Uninstall", UninstallTab),
-	)
-
-	content := container.NewVBox(
-		GeneralTabs,
-	)
-
-	window.SetContent(content)
-	window.ShowAndRun()
+	return UninstallTab
 }
 
 // Internal functions
-func saveText(chocoText, scoopText string) {
+func saveText() {
 	yamlData := core.Yamlfile{}
 
-	// Set choco values
-	yamlData.Choco_Install = chocoText
-	yamlData.Scoop_Install = scoopText
+	// Set choco install values
+	yamlData.Choco_Install = Choco_InstallTXT
 	yamlData.Choco_Install_Configs.Force = install.Choco.Force
 	yamlData.Choco_Install_Configs.Verbose = install.Choco.Verbose
 	yamlData.Choco_Install_Configs.Upgrade = install.Choco.Upgrade
-	// Set scoop values
+	// Set scoop install values
 	yamlData.Scoop_Install_Configs.Upgrade = install.Scoop.Upgrade
+	yamlData.Scoop_Install = Scoop_InstallTXT
+	// Set choco uninstall values
+	yamlData.Choco_Uninstall = Choco_UninstallTXT
+	yamlData.Choco_Uninstall_Configs.Force = uninstall.Choco.Force
+	yamlData.Choco_Uninstall_Configs.Verbose = uninstall.Choco.Verbose
+	// Set Scoop uninstall values
+	yamlData.Scoop_Uninstall = Scoop_UninstallTXT
 	data, err := yaml.Marshal(yamlData)
 	if err != nil {
 		fmt.Println("Error marshalling YAML:", err)
