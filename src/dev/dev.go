@@ -7,8 +7,8 @@
 package dev
 
 import (
-	"Windows-package-autoinstaller/src/core"
-	"Windows-package-autoinstaller/src/icon"
+	"FetchBox/src/core"
+	"FetchBox/src/icon"
 	"errors"
 
 	"fyne.io/fyne/v2"
