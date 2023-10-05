@@ -52,3 +52,23 @@ func basicChocoCheck(app fyne.App, editedTextChoco string) error {
 	}
 	return nil
 }
+
+func basicScoopCheck(app fyne.App, editedTextScoop string) error {
+	if err := core.CheckOS(); err != nil { // Check the OS
+		ErrWin(app, err, nil)
+		return err
+	}
+	// Check for nil string values
+	if editedTextScoop == "" || editedTextScoop == "<nil>" {
+		err := errors.New("scoop package list is empty")
+		ErrWin(app, err, nil)
+		return err
+	}
+	// Check if scoop is installed
+	if !core.CheckScoop() {
+		InstallPkgManagerWin(app, "Scoop", core.InstallScoop)
+		return nil
+	}
+	return nil
+
+}

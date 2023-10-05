@@ -1,8 +1,6 @@
 package graph
 
 import (
-	"FetchBox/src/core"
-	"errors"
 	"fmt"
 
 	"fyne.io/fyne/v2"
@@ -44,7 +42,11 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	editedTextScoopUninstall := widget.NewMultiLineEntry()
 	editedTextScoopUninstall.SetText(data.Scoop_Uninstall)
 	scoopUninstallButton := widget.NewButtonWithIcon("Uninstall packages", UninstallICON, func() {
-		err := uninstall.UninstallScoopPkgs()
+		err := basicScoopCheck(app, editedTextScoopUninstall.Text)
+		if err != nil {
+			return
+		}
+		err = uninstall.UninstallScoopPkgs()
 		if err != nil {
 			ErrWin(app, err, nil)
 		}
@@ -151,20 +153,8 @@ func InstallTab(app fyne.App) *container.AppTabs {
 	}
 	// Scoop install init button with icon
 	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", DownloadICON, func() {
-		if err := core.CheckOS(); err != nil { // Check the OS
-			ErrWin(app, err, nil)
-			return
-		}
-		// Check for nil string values
-		if editedTextScoop.Text == "" || editedTextScoop.Text == "<nil>" {
-			ErrWin(app, errors.New("scoop package list is empty"), nil)
-			return
-		}
-		// Check if scoop is installed
-		if !core.CheckScoop() {
-			InstallPkgManagerWin(app, "Scoop", core.InstallScoop)
-			return
-		}
+		// Checks Scoop
+		basicScoopCheck(app, editedTextScoop.Text)
 		// Init install window
 		InstallWindow(app, "Scoop", func() error {
 			err := install.ScoopPkgInstall()
