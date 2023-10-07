@@ -9,7 +9,7 @@
 - Set uninstall icon
 - Improve error system in new funtions in core lib
 - Relativize InstallWindow func
-- Hide cmd window in the command exec
+- ~~Hide cmd window in the command exec~~
 - Improve var names
 
 

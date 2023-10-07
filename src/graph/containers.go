@@ -154,7 +154,10 @@ func InstallTab(app fyne.App) *container.AppTabs {
 	// Scoop install init button with icon
 	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", DownloadICON, func() {
 		// Checks Scoop
-		basicScoopCheck(app, editedTextScoop.Text)
+		err := basicScoopCheck(app, editedTextScoop.Text)
+		if err != nil {
+			return
+		}
 		// Init install window
 		InstallWindow(app, "Scoop", func() error {
 			err := install.ScoopPkgInstall()

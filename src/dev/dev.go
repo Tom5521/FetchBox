@@ -21,6 +21,14 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 	// This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
+	checksudobutton := widget.NewButton("Check Sudo", func() {
+		err := core.CheckSudo_External()
+		if err != nil {
+			InfoWin(app, "NOT Sudo")
+		} else {
+			InfoWin(app, "YES Sudo")
+		}
+	})
 	restartButtom := widget.NewButton("Restart", func() {
 		RestartWindow(app, "Dev")
 	})
@@ -39,6 +47,14 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 	ShowInfoWinButton := widget.NewButton("Show Info window", func() {
 		InfoWin(app, "This is a dev window!")
 	})
+	CheckScoopButton := widget.NewButton("Check Scoop", func() {
+		check := core.CheckScoop()
+		if check {
+			InfoWin(app, "Scoop is installed")
+		} else {
+			InfoWin(app, "Scoop isn't installed")
+		}
+	})
 
 	content := container.NewVBox(
 		restartButtom,
@@ -47,6 +63,8 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 		installpkgmngBT_Scoop,
 		ShowIconsButton,
 		ShowInfoWinButton,
+		checksudobutton,
+		CheckScoopButton,
 	)
 	window.SetContent(content)
 	window.Show()

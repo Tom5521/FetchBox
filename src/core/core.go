@@ -28,7 +28,11 @@ var (
 	sudotype       string
 	sh             = func() commands.Sh {
 		internal_sh := commands.Sh{}
-		internal_sh.RunWithShell = false
+		internal_sh.Windows.RunWithPowerShell = true
+		//internal_sh.Windows.PowerShell.WindowStyle.Enabled = true
+		//internal_sh.Windows.PowerShell.WindowStyle.Minimized = true
+		internal_sh.Windows.PowerShell.NoLogo = true
+		internal_sh.Windows.PowerShell.NonInteractive = true
 		return internal_sh
 	}()
 	Root = func() string {
@@ -113,12 +117,14 @@ func CheckDir(dir string) bool {
 }
 
 func CheckSudo() (bool, string) {
+	tmpsh := sh
+	tmpsh.Windows.PowerShell.WindowStyle.Minimized = true
 	var (
 		err1, err2 bool
 		sudotype   string
 	)
 	color.Yellow.Println("Checking gsudo...")
-	_, err := sh.Out("gsudo -v")
+	_, err := tmpsh.Out("gsudo -v")
 	if err == nil {
 		color.Green.Println("gsudo detected!!!")
 		err2 = true
@@ -127,7 +133,7 @@ func CheckSudo() (bool, string) {
 		color.Yellow.Println("gsudo not detected...")
 	}
 	color.Yellow.Println("Checking sudo...")
-	_, err = sh.Out("sudo /?")
+	_, err = tmpsh.Out("sudo /?")
 	if err == nil {
 		color.Green.Println("sudo detected!!!")
 		err1 = true
@@ -141,11 +147,8 @@ func CheckSudo() (bool, string) {
 //Install pkgmanagers functions
 
 func InstallScoop() error {
-	tempshell := sh
-	tempshell.RunWithShell = true
-	tempshell.Windows.PowerShell = true
-	err1 := tempshell.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
-	err2 := tempshell.Cmd("irm get.scoop.sh | iex")
+	err1 := sh.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
+	err2 := sh.Cmd("irm get.scoop.sh | iex")
 	if err1 != nil || err2 != nil {
 		return fmt.Errorf(
 			fmt.Sprintf("Error installing scoop:\nCmd1:%v\nCmd2:%v", err1.Error(), err2.Error()),
@@ -159,11 +162,8 @@ func InstallScoop() error {
 }
 
 func InstallChoco() error {
-	tempshell := sh
-	tempshell.Windows.PowerShell = true
-	err := tempshell.Cmd(
-		"Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))",
-	)
+	command := "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+	err := sh.Cmd(command)
 	if err != nil {
 		return err
 	}
