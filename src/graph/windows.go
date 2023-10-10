@@ -126,9 +126,9 @@ func RestartWindow(app fyne.App, restartTXT string) {
 
 func InfoWindow(app fyne.App, InfoLabelTXT string, infoTitle ...string) {
 	var info = "Info"
-	if len(infoTitle) > 1 {
-		if infoTitle[1] != "" {
-			info = infoTitle[1]
+	if len(infoTitle) >= 1 {
+		if infoTitle[0] != "" {
+			info = infoTitle[0]
 		}
 	}
 	window := app.NewWindow(info)

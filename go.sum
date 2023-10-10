@@ -43,6 +43,8 @@ fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a h1:6Xf9fP3/mt72NrqlQhJWhQG
 fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a/go.mod h1:oM2AQqGJ1AMo4nNqZFYU8xYygSBZkW2hmdJ7n4yjedE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/Tom5521/MyGolangTools v0.0.0-20230929171646-16702e20e619 h1:hRcA6skRc+qFFKuT3BRHdNiUDiH8/cqdzBfLn7udW+A=
+github.com/Tom5521/MyGolangTools v0.0.0-20230929171646-16702e20e619/go.mod h1:umHkYG6S+C0DM7h3zKG0sz8E9GF03vaHEoislM0d3aQ=
 github.com/Tom5521/MyGolangTools v0.0.0-20231006055812-f435a9be1b7b h1:7QaulDA8mMBlFSOC52vkSiSkcrWG0CE+6bFvz/fkwjw=
 github.com/Tom5521/MyGolangTools v0.0.0-20231006055812-f435a9be1b7b/go.mod h1:umHkYG6S+C0DM7h3zKG0sz8E9GF03vaHEoislM0d3aQ=
 github.com/Tom5521/MyGolangTools v0.0.0-20231006060353-4c1a9444e879 h1:cnFJ012q8tawJ5yMu+YDUGV/Fg4nJvuyTFFUFEndsGI=
@@ -51,6 +53,8 @@ github.com/Tom5521/MyGolangTools v0.0.0-20231006060850-4bebf18c973e h1:nky+vudYU
 github.com/Tom5521/MyGolangTools v0.0.0-20231006060850-4bebf18c973e/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
 github.com/Tom5521/MyGolangTools v0.0.0-20231007015954-4419160d4639 h1:D6qscwxcaV/KPMOOGGxsZXJgWLNX/Lg4EhgCckY/mzM=
 github.com/Tom5521/MyGolangTools v0.0.0-20231007015954-4419160d4639/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
+github.com/Tom5521/MyGolangTools v0.0.0-20231007182442-2975e52c3503 h1:TPfFwh4JP3Iix+dbgwTrRYHMtEwH25O7QUCgqGIpcXQ=
+github.com/Tom5521/MyGolangTools v0.0.0-20231007182442-2975e52c3503/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
