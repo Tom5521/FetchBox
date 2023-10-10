@@ -1,5 +1,5 @@
 /*
- * Copyright (c) - All Rights Reserved.
+ * Copyright Tom5521(c) - All Rights Reserved.
  *
  * This project is licenced under the MIT License.
  */
@@ -10,27 +10,32 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Tom5521/Windows-package-autoinstaller/src/core"
-	"github.com/Tom5521/Windows-package-autoinstaller/src/graph"
+	"FetchBox/src/core"
+	"FetchBox/src/graph"
 )
 
 func main() {
 	if len(os.Args) > 1 {
-		TermMode() // Check the cmd args
-		return
+		if os.Args[1] != "dev" {
+			TermMode() // Check the cmd args
+			return
+		}
 	}
 	graph.Init() // Initialize the graphical mode
 }
 
 func TermMode() {
+	var (
+		install = core.Install{}
+	)
 	switch os.Args[1] {
 	case "scoop":
-		err := core.ScoopPkgInstall()
+		err := install.ScoopPkgInstall()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 	case "choco":
-		err := core.ChocoPkgInstall()
+		err := install.ChocoPkgInstall()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -43,7 +48,10 @@ func TermMode() {
 		)
 	case "addCustomBuckets":
 		if len(os.Args) >= 3 {
-			core.ScoopBucketInstall(os.Args[2])
+			err := core.ScoopBucketInstall(os.Args[2])
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		}
 	}
 }

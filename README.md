@@ -1,4 +1,10 @@
-# Windows-package-autoinstaller
+# FetchBox
+
+![CodeFactor Grade (with branch)](https://img.shields.io/codefactor/grade/github/Tom5521/FetchBox/dev?label=Code%20Quality%20dev%20branch)
+![CodeFactor Grade (with branch)](https://img.shields.io/codefactor/grade/github/Tom5521/FetchBox/main?label=Code%20Quality%20main%20branch)
+
+
+
 
 This is a little program why use for installing packages automatically in my windows making a frontend for scoop and choco package managers to which I plan to add many more functions
 
