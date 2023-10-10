@@ -1,3 +1,9 @@
+/*
+ * Copyright Tom5521(c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package graph
 
 import (
@@ -31,10 +37,10 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 		if err != nil {
 			return
 		}
-		err = uninstall.UninstallChocoPkgs()
-		if err != nil {
-			ErrWin(app, err, nil)
-		}
+		ProcessWindow(app, "Choco", func() error { // Uninstall window with install function
+			err := uninstall.UninstallChocoPkgs()
+			return err
+		})
 	})
 	// Scoop
 	scoopLabelUtab := widget.NewLabel("Scoop packages to uninstall")
@@ -46,10 +52,10 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 		if err != nil {
 			return
 		}
-		err = uninstall.UninstallScoopPkgs()
-		if err != nil {
-			ErrWin(app, err, nil)
-		}
+		ProcessWindow(app, "Scoop", func() error { // Uninstall window with install function
+			err := uninstall.UninstallScoopPkgs()
+			return err
+		})
 	})
 
 	// Both Interface
@@ -131,7 +137,7 @@ func InstallTab(app fyne.App) *container.AppTabs {
 		if err != nil {
 			return
 		}
-		InstallWindow(app, "Choco", func() error { // Install window with install function
+		ProcessWindow(app, "Choco", func() error { // Install window with install function
 			err := install.ChocoPkgInstall()
 			return err
 		})
@@ -159,7 +165,7 @@ func InstallTab(app fyne.App) *container.AppTabs {
 			return
 		}
 		// Init install window
-		InstallWindow(app, "Scoop", func() error {
+		ProcessWindow(app, "Scoop", func() error {
 			err := install.ScoopPkgInstall()
 			return err
 		})

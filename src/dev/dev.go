@@ -1,5 +1,5 @@
 /*
- * Copyright (c) - All Rights Reserved.
+ * Copyright Tom5521(c) - All Rights Reserved.
  *
  * This project is licenced under the MIT License.
  */
@@ -17,7 +17,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string)) {
+func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string, ...string)) {
 	// This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
@@ -45,7 +45,7 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 		ShowIconsWin(app)
 	})
 	ShowInfoWinButton := widget.NewButton("Show Info window", func() {
-		InfoWin(app, "This is a dev window!")
+		InfoWin(app, "This is a dev window!", "Test title")
 	})
 	CheckScoopButton := widget.NewButton("Check Scoop", func() {
 		check := core.CheckScoop()

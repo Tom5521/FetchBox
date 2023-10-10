@@ -1,3 +1,9 @@
+/*
+ * Copyright Tom5521(c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package core
 
 import (

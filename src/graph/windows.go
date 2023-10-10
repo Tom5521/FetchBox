@@ -1,3 +1,9 @@
+/*
+ * Copyright Tom5521(c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package graph
 
 import (
@@ -6,7 +12,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func InstallWindow(app fyne.App, windowName string, f func() error) {
+func ProcessWindow(app fyne.App, windowName string, f func() error) {
 	window := app.NewWindow(windowName)
 	window.Resize(InstallSize)
 	window.SetFixedSize(true)
@@ -118,11 +124,17 @@ func RestartWindow(app fyne.App, restartTXT string) {
 	window.Show()
 }
 
-func InfoWindow(app fyne.App, text string) {
-	window := app.NewWindow("Info")
+func InfoWindow(app fyne.App, InfoLabelTXT string, infoTitle ...string) {
+	var info = "Info"
+	if len(infoTitle) > 1 {
+		if infoTitle[1] != "" {
+			info = infoTitle[1]
+		}
+	}
+	window := app.NewWindow(info)
 	window.SetIcon(InfoICON)
 
-	InfoLabel := widget.NewLabel(text)
+	InfoLabel := widget.NewLabel(InfoLabelTXT)
 	InfoLabel.Alignment = fyne.TextAlignCenter
 	InfoLabel.TextStyle.Bold = true
 
