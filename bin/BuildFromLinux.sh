@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd ..
 
 sudo fyne-cross windows -arch=amd64 -env FYNE_THEME=dark
 
