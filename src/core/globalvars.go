@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	Version string = "v2.2-beta2"
+	Version string = "v2.2"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
