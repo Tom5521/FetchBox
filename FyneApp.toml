@@ -1,6 +1,6 @@
 [Details]
   Icon = "Assets/Icon.png"
   Name = "FetchBox"
-  ID = "io.github.Tom5521.FetchBox"
+  ID = "github.Tom5521.FetchBox"
   Version = "2.2"
   Build = 39
