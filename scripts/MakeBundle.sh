@@ -1,14 +1,16 @@
 #!/bin/bash
 
 
+route="./pkg/icons/bundled.go"
+
 ReGenerateBundle()
 {
-  fyne bundle --pkg icon --name "$1" -o ./src/icon/bundled.go "$2"
+  fyne bundle --pkg icon --name "$1" -o $route "$2"
 }
 
 AppendBundle ()
 {
-  fyne bundle --pkg icon --name "$1" -o ./src/icon/bundled.go -append "$2"
+  fyne bundle --pkg icon --name "$1" -o $route -append "$2"
 }
 
 

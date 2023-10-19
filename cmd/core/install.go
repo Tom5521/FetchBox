@@ -7,10 +7,12 @@
 package core
 
 import (
+	"FetchBox/pkg/checks"
 	"errors"
 	"fmt"
 	"strings"
 
+	win "github.com/Tom5521/CmdRunTools/windows"
 	"github.com/gookit/color"
 )
 
@@ -56,7 +58,7 @@ func (i Install) ChocoPkgInstall() error {
 	if !IsAdmin {
 		color.Red.Print("Running without administrator permissions... ")
 		color.Yellow.Println("Checking sudo or gsudo...")
-		checksudo, sudotype = CheckSudo()
+		checksudo, sudotype = checks.CheckSudo()
 		if !checksudo {
 			return errors.New("sudo or gsudo not detected")
 		}
@@ -68,7 +70,7 @@ func (i Install) ChocoPkgInstall() error {
 		color.Yellow.Println("Using " + sudotype)
 	}
 	command = fmt.Sprintf("%vchoco %v %v -y %v %v", sudotype, mode, force, verbose, data.Choco_Install)
-	err := sh.Cmd(command)
+	err := win.Cmd(command).Run()
 	if err != nil {
 		color.Red.Println("Prossess Completed with errors.")
 		return err
@@ -104,7 +106,7 @@ func (i Install) ScoopPkgInstall() error {
 		mode = "install"
 	}
 	command := fmt.Sprintf("scoop %v %v", mode, data.Scoop_Install)
-	err = sh.Cmd(command)
+	err = win.Cmd(command).Run()
 	if err != nil {
 		return err
 	}
@@ -112,9 +114,12 @@ func (i Install) ScoopPkgInstall() error {
 }
 
 func ScoopBucketInstall(bucket string) error {
-	if _, check := sh.Out("git --version"); check != nil {
+	cmd := win.Cmd("")
+	cmd.SetInput("git --version")
+	if check := cmd.Run(); check != nil {
 		color.Yellow.Println("Git is not installed... Installing git...")
-		err := sh.Cmd("scoop install git")
+		cmd.SetInput("scoop install git")
+		err := cmd.Run()
 		if err != nil {
 			color.Red.Println("Error installing git...")
 			return err
@@ -122,7 +127,8 @@ func ScoopBucketInstall(bucket string) error {
 		color.Green.Println("Git Installed!")
 	}
 	color.Yellow.Printf("Adding %v bucket...", bucket)
-	err := sh.Cmd(fmt.Sprintf("scoop bucket add %v", bucket))
+	cmd.SetInput(fmt.Sprintf("scoop bucket add %v", bucket))
+	err := cmd.Run()
 	if err != nil {
 		color.Red.Printf("Error adding %v bucket", bucket)
 		return err

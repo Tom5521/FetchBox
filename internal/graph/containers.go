@@ -7,6 +7,8 @@
 package graph
 
 import (
+	icon "FetchBox/pkg/icons"
+	"FetchBox/pkg/windows"
 	"fmt"
 
 	"fyne.io/fyne/v2"
@@ -32,12 +34,12 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	if data.Choco_Uninstall_Configs.Force {
 		forceUninstallChocoCheck.SetChecked(true)
 	}
-	chocoUninstallButton := widget.NewButtonWithIcon("Uninstall Packages", UninstallICON, func() {
+	chocoUninstallButton := widget.NewButtonWithIcon("Uninstall Packages", icon.UninstallICON, func() {
 		err := basicChocoCheck(app, editedTextChocoUninstall.Text)
 		if err != nil {
 			return
 		}
-		ProcessWindow(app, "Choco", func() error { // Uninstall window with install function
+		windows.ProcessWindow(app, "Choco", func() error { // Uninstall window with install function
 			err := uninstall.UninstallChocoPkgs()
 			return err
 		})
@@ -47,12 +49,12 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 	scoopLabelUtab.TextStyle.Bold = true
 	editedTextScoopUninstall := widget.NewMultiLineEntry()
 	editedTextScoopUninstall.SetText(data.Scoop_Uninstall)
-	scoopUninstallButton := widget.NewButtonWithIcon("Uninstall packages", UninstallICON, func() {
+	scoopUninstallButton := widget.NewButtonWithIcon("Uninstall packages", icon.UninstallICON, func() {
 		err := basicScoopCheck(app, editedTextScoopUninstall.Text)
 		if err != nil {
 			return
 		}
-		ProcessWindow(app, "Scoop", func() error { // Uninstall window with install function
+		windows.ProcessWindow(app, "Scoop", func() error { // Uninstall window with install function
 			err := uninstall.UninstallScoopPkgs()
 			return err
 		})
@@ -60,7 +62,7 @@ func UninstallTab(app fyne.App) *container.AppTabs {
 
 	// Both Interface
 
-	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
+	saveButton := widget.NewButtonWithIcon("Save configs", icon.SaveICON, func() {
 		// Set to save the multine edited text
 		data.Scoop_Uninstall = editedTextScoopUninstall.Text
 		data.Choco_Uninstall = editedTextChocoUninstall.Text
@@ -132,12 +134,12 @@ func InstallTab(app fyne.App) *container.AppTabs {
 	}
 
 	// Set button for install with icon
-	installChocoPackBtn := widget.NewButtonWithIcon("Install Choco packages", DownloadICON, func() {
+	installChocoPackBtn := widget.NewButtonWithIcon("Install Choco packages", icon.DownloadICON, func() {
 		err := basicChocoCheck(app, editedTextChoco.Text)
 		if err != nil {
 			return
 		}
-		ProcessWindow(app, "Choco", func() error { // Install window with install function
+		windows.ProcessWindow(app, "Choco", func() error { // Install window with install function
 			err := install.ChocoPkgInstall()
 			return err
 		})
@@ -158,21 +160,21 @@ func InstallTab(app fyne.App) *container.AppTabs {
 		scoopUpgradeCheckButton.SetChecked(true)
 	}
 	// Scoop install init button with icon
-	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", DownloadICON, func() {
+	installScoopPackBtn := widget.NewButtonWithIcon("Install Scoop Packages", icon.DownloadICON, func() {
 		// Checks Scoop
 		err := basicScoopCheck(app, editedTextScoop.Text)
 		if err != nil {
 			return
 		}
 		// Init install window
-		ProcessWindow(app, "Scoop", func() error {
+		windows.ProcessWindow(app, "Scoop", func() error {
 			err := install.ScoopPkgInstall()
 			return err
 		})
 	})
 
 	// Declare button for save the configs
-	saveButton := widget.NewButtonWithIcon("Save configs", SaveICON, func() {
+	saveButton := widget.NewButtonWithIcon("Save configs", icon.SaveICON, func() {
 		data.Choco_Install = editedTextChoco.Text
 		data.Scoop_Install = editedTextScoop.Text
 		// Set the choco checks

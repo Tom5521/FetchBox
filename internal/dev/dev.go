@@ -7,8 +7,9 @@
 package dev
 
 import (
-	"FetchBox/src/core"
-	"FetchBox/src/icon"
+	"FetchBox/cmd/core"
+	"FetchBox/pkg/checks"
+	icon "FetchBox/pkg/icons"
 	"errors"
 
 	"fyne.io/fyne/v2"
@@ -22,7 +23,7 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
 	checksudobutton := widget.NewButton("Check Sudo", func() {
-		err := core.CheckSudo_External()
+		err := checks.CheckSudo_External()
 		if err != nil {
 			InfoWin(app, "NOT Sudo")
 		} else {
@@ -48,7 +49,7 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 		InfoWin(app, "This is a dev window!", "Test title")
 	})
 	CheckScoopButton := widget.NewButton("Check Scoop", func() {
-		check := core.CheckScoop()
+		check := checks.CheckScoop()
 		if check {
 			InfoWin(app, "Scoop is installed")
 		} else {

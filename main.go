@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"FetchBox/src/core"
-	"FetchBox/src/graph"
+	"FetchBox/cmd/core"
+	"FetchBox/internal/graph"
 )
 
 func main() {
