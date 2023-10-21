@@ -4,7 +4,8 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.4.0
-	github.com/Tom5521/MyGolangTools v0.0.0-20231007182442-2975e52c3503
+	github.com/Tom5521/CmdRunTools v0.0.0-20231019035844-c70fdf9fded8
+	github.com/Tom5521/MyGolangTools v0.0.0-20231010162633-0156c6f12467
 	github.com/gookit/color v1.5.4
 	gopkg.in/yaml.v3 v3.0.1
 )

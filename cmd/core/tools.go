@@ -1,10 +1,12 @@
 package core
 
 import (
+	"FetchBox/pkg/checks"
 	"errors"
 	"fmt"
 	"os"
 
+	win "github.com/Tom5521/CmdRunTools/windows"
 	"github.com/Tom5521/MyGolangTools/file"
 	"github.com/gookit/color"
 	"gopkg.in/yaml.v3"
@@ -24,10 +26,10 @@ func NewYamlFile() {
 
 func GetYamldata() Yamlfile {
 	yamldata := Yamlfile{}
-	if !CheckDir(ConfigFilename) {
+	if !checks.CheckDir(ConfigFilename) {
 		fmt.Printf(Red(ConfigFilename+" not found...") + Yellow("Creating a new one...\n"))
 		NewYamlFile()
-		if CheckDir(ConfigFilename) {
+		if checks.CheckDir(ConfigFilename) {
 			color.Green.Println(ConfigFilename + " file created!!!")
 		}
 		return GetYamldata()
@@ -47,10 +49,12 @@ func GetYamldata() Yamlfile {
 //Install pkgmanagers functions
 
 func InstallScoop() error {
-	sh := sh
-	sh.Windows.RunWithPowerShell = true
-	err1 := sh.Cmd("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
-	err2 := sh.Cmd("irm get.scoop.sh | iex")
+	cmd := win.Cmd("")
+	cmd.RunWithPS(true)
+	cmd.SetInput("Set-ExecutionPolicy RemoteSigned -Scope CurrentUser")
+	err1 := cmd.Run()
+	cmd.SetInput("irm get.scoop.sh | iex")
+	err2 := cmd.Run()
 	if err1 != nil || err2 != nil {
 		return fmt.Errorf(
 			fmt.Sprintf("Error installing scoop:\nCmd1:%v\nCmd2:%v", err1.Error(), err2.Error()),
@@ -67,10 +71,11 @@ func InstallChoco() error {
 	if !IsAdmin {
 		return errors.New("To install choco, run this as administrator")
 	}
-	sh := sh
-	sh.Windows.RunWithPowerShell = true
+
 	command := "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
-	err := sh.Cmd(command)
+	cmd := win.Cmd(command)
+	cmd.RunWithPS(true)
+	err := cmd.Run()
 	if err != nil {
 		return err
 	}

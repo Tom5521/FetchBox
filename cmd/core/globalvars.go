@@ -1,31 +1,25 @@
 package core
 
 import (
+	"FetchBox/pkg/checks"
 	"os"
 
-	"github.com/Tom5521/MyGolangTools/commands"
 	"github.com/gookit/color"
 )
 
 var (
-	Version string = "v2.2"
+	Version string = "v2.3"
 	Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
 	Yellow         = color.FgYellow.Render
-	linuxCH        = CheckOS()
+	linuxCH        = checks.CheckOS()
 	ConfigFilename = "FetchBox-conf.yml"
 	sudotype       string
-	sh             = commands.Sh{}
 	Root           = func() string {
 		dir, _ := os.Executable()
 		return dir
 	}()
-	IsAdmin bool = func() bool {
-		if _, err := os.Open("\\\\.\\PHYSICALDRIVE0"); err != nil {
-			return false
-		}
-		return true
-	}()
+	IsAdmin = checks.IsAdmin()
 )
 
 type Yamlfile struct {

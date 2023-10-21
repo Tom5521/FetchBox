@@ -4,19 +4,28 @@
  * This project is licenced under the MIT License.
  */
 
-package graph
+package windows
 
 import (
+	icon "FetchBox/pkg/icons"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+)
+
+var (
+	// Declare winsizes
+	InstallSize = fyne.NewSize(400, 70)
+	MainSize    = fyne.NewSize(344, 237)
+	ErrSize     = fyne.NewSize(400, 80)
 )
 
 func ProcessWindow(app fyne.App, windowName string, f func() error) {
 	window := app.NewWindow(windowName)
 	window.Resize(InstallSize)
 	window.SetFixedSize(true)
-	window.SetIcon(InstallICON)
+	window.SetIcon(icon.InstallICON)
 	infinite := widget.NewProgressBarInfinite()
 	acceptButton := widget.NewButton("Continue", func() {
 		window.Close()
@@ -46,7 +55,7 @@ func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
 	window := app.NewWindow("Error")
 	window.Resize(ErrSize)
 	//window.SetFixedSize(true)
-	window.SetIcon(ErrorICON)
+	window.SetIcon(icon.ErrorICON)
 	errlabel := widget.NewLabel(err.Error())
 	errlabel.TextStyle.Bold = true
 	errlabel.Alignment = fyne.TextAlignCenter
@@ -71,7 +80,7 @@ func InstallPkgManagerWin(app fyne.App, pkgman_name string, f func() error) {
 	window := app.NewWindow("Installing " + pkgman_name)
 	window.Resize(InstallSize)
 	window.SetFixedSize(true)
-	window.SetIcon(InstallICON)
+	window.SetIcon(icon.InstallICON)
 	continueButton := widget.NewButton("Accept", func() {
 		window.Close()
 		if restart {
@@ -107,13 +116,13 @@ func RestartWindow(app fyne.App, restartTXT string) {
 	window := app.NewWindow("Restart")
 	window.Resize(ErrSize)
 	window.SetFixedSize(true)
-	window.SetIcon(RestartICON)
+	window.SetIcon(icon.RestartICON)
 
 	label := widget.NewLabel(restartTXT)
 	label.TextStyle.Bold = true
 	label.Alignment = fyne.TextAlignCenter
 	InfoWindow(app, "You need to restart the program!")
-	restartButton := widget.NewButtonWithIcon("Restart", RestartICON, func() {
+	restartButton := widget.NewButtonWithIcon("Restart", icon.RestartICON, func() {
 		app.Quit()
 	})
 
@@ -132,7 +141,7 @@ func InfoWindow(app fyne.App, InfoLabelTXT string, infoTitle ...string) {
 		}
 	}
 	window := app.NewWindow(info)
-	window.SetIcon(InfoICON)
+	window.SetIcon(icon.InfoICON)
 
 	InfoLabel := widget.NewLabel(InfoLabelTXT)
 	InfoLabel.Alignment = fyne.TextAlignCenter
