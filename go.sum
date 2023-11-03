@@ -37,14 +37,14 @@ cloud.google.com/go/storage v1.6.0/go.mod h1:N7U0C8pVQ/+NIKOBQyamJIeKQKkZ+mxpohl
 cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RXyy7KQOVs=
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-fyne.io/fyne/v2 v2.4.0 h1:LlyOyHmvkSo9IBm3aY+NVWSBIw+GMnssmyyIMK8F7zM=
-fyne.io/fyne/v2 v2.4.0/go.mod h1:AWM1iPM2YfliduZ4u/kQzP9E6ARIWm0gg+57GpYzWro=
+fyne.io/fyne/v2 v2.4.1 h1:Es100N6HIhJGg8H2ZAS2j5H/YibfxecXHs2V4A4hbq8=
+fyne.io/fyne/v2 v2.4.1/go.mod h1:AWM1iPM2YfliduZ4u/kQzP9E6ARIWm0gg+57GpYzWro=
 fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a h1:6Xf9fP3/mt72NrqlQhJWhQGcNf6GoG9X96NTaXr+K6A=
 fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a/go.mod h1:oM2AQqGJ1AMo4nNqZFYU8xYygSBZkW2hmdJ7n4yjedE=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/Tom5521/CmdRunTools v0.0.0-20231019035844-c70fdf9fded8 h1:al1vF0aYWGwxtSEbRGk9UNw+RCiOE2eaRo1N7+HKWyA=
-github.com/Tom5521/CmdRunTools v0.0.0-20231019035844-c70fdf9fded8/go.mod h1:Ywc6tQeKfMTJVFDL0oUfHoW+VI9++dV/FFcroGFe+zw=
+github.com/Tom5521/CmdRunTools v1.3.0 h1:u9M/3L3cGByfMZK8ljsvUa1GEjzHHS5vy0spAjjqNQM=
+github.com/Tom5521/CmdRunTools v1.3.0/go.mod h1:plBMPx+TAzHknZ/yX347w7p2Astm0MWrZS9dF/KCR/4=
 github.com/Tom5521/MyGolangTools v0.0.0-20231010162633-0156c6f12467 h1:L5lkLQK1TDXTvPxCapntP0dBV30I91bgH4/+YUMlPOg=
 github.com/Tom5521/MyGolangTools v0.0.0-20231010162633-0156c6f12467/go.mod h1:QovXEupbIBTOVIJ97GiRFabS4UJQm+Me4n3D2rkf6vg=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
@@ -100,6 +100,7 @@ github.com/go-text/render v0.0.0-20230619120952-35bccb6164b8/go.mod h1:h29xCucjN
 github.com/go-text/typesetting v0.0.0-20230616162802-9c17dd34aa4a h1:VjN8ttdfklC0dnAdKbZqGNESdERUxtE3l8a/4Grgarc=
 github.com/go-text/typesetting v0.0.0-20230616162802-9c17dd34aa4a/go.mod h1:evDBbvNR/KaVFZ2ZlDSOWWXIUKq0wCOEtzLxRM8SG3k=
 github.com/go-text/typesetting-utils v0.0.0-20230616150549-2a7df14b6a22 h1:LBQTFxP2MfsyEDqSKmUBZaDuDHN1vpqDyOZjcqS7MYI=
+github.com/go-text/typesetting-utils v0.0.0-20230616150549-2a7df14b6a22/go.mod h1:DDxDdQEnB70R8owOx3LVpEFvpMK9eeH1o2r0yZhFI9o=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
 github.com/godbus/dbus/v5 v5.1.0 h1:4KLkAxT3aOY8Li4FRJe/KvhoNFFxo0m6fNuFUO8QJUk=
 github.com/godbus/dbus/v5 v5.1.0/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=

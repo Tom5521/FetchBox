@@ -36,7 +36,7 @@ func ProcessWindow(app fyne.App, windowName string, f func() error) {
 		if err != nil {
 			window.SetTitle("Completed with errors")
 			infinite.Stop()
-			ErrWin(app, err, window)
+			ErrWin(app, err.Error(), window)
 		} else {
 			infinite.Stop()
 			window.SetTitle("Completed.")
@@ -51,18 +51,20 @@ func ProcessWindow(app fyne.App, windowName string, f func() error) {
 	window.Show()
 }
 
-func ErrWin(app fyne.App, err error, clWindow fyne.Window) {
+func ErrWin(app fyne.App, err string, clWindow ...fyne.Window) {
 	window := app.NewWindow("Error")
 	window.Resize(ErrSize)
 	//window.SetFixedSize(true)
 	window.SetIcon(icon.ErrorICON)
-	errlabel := widget.NewLabel(err.Error())
+	errlabel := widget.NewLabel(err)
 	errlabel.TextStyle.Bold = true
 	errlabel.Alignment = fyne.TextAlignCenter
 	acceptButton := widget.NewButton("Accept", func() {
 		window.Close()
-		if clWindow != nil {
-			clWindow.Close()
+		if len(clWindow) != 0 {
+			if clWindow != nil {
+				clWindow[0].Close()
+			}
 		}
 	})
 
@@ -94,7 +96,7 @@ func InstallPkgManagerWin(app fyne.App, pkgman_name string, f func() error) {
 	go func() {
 		err := f()
 		if err != nil {
-			ErrWin(app, err, window)
+			ErrWin(app, err.Error(), window)
 			infinite.Stop()
 			continueButton.Enable()
 		} else {

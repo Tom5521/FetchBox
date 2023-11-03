@@ -11,7 +11,7 @@ import (
 	"os"
 	"runtime"
 
-	win "github.com/Tom5521/CmdRunTools/windows"
+	"github.com/Tom5521/CmdRunTools/command"
 	"github.com/Tom5521/MyGolangTools/file"
 )
 
@@ -31,7 +31,7 @@ func CheckDir(dir string) bool {
 }
 
 func CheckSudo() (bool, string) {
-	cmd := win.Cmd("")
+	cmd := command.Cmd{}
 	cmd.HideCmdWindow(true)
 	cmd.SetInput("gsudo -v")
 	if err := cmd.Run(); err == nil {
@@ -50,7 +50,7 @@ func CheckSudo() (bool, string) {
 
 // Check if the pkg managers exists
 func CheckScoop() bool {
-	cmd := win.Cmd("scoop --version")
+	cmd := command.InitCmd("scoop --version")
 	cmd.HideCmdWindow(true)
 	if err := cmd.Run(); err != nil {
 		return false
@@ -59,7 +59,7 @@ func CheckScoop() bool {
 }
 
 func CheckChoco() bool {
-	cmd := win.Cmd("choco --version")
+	cmd := command.InitCmd("choco --version")
 	cmd.HideCmdWindow(true)
 	if err := cmd.Run(); err != nil {
 		return false

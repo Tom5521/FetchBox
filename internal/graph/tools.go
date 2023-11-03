@@ -33,13 +33,13 @@ func saveText() {
 
 func basicChocoCheck(app fyne.App, editedTextChoco string) error {
 	if err := checks.CheckOS(); err != nil { // Check the OS for show error in linux
-		windows.ErrWin(app, err, nil)
+		windows.ErrWin(app, err.Error())
 		return err
 	}
 
 	if editedTextChoco == "" || editedTextChoco == "<nil>" { // Check the text for nil values
 		err := errors.New("choco package list is empty")
-		windows.ErrWin(app, err, nil)
+		windows.ErrWin(app, err.Error())
 		return err
 	}
 	if !core.IsAdmin { // Check admin permissions
@@ -48,8 +48,7 @@ func basicChocoCheck(app fyne.App, editedTextChoco string) error {
 		if err != nil {
 			windows.ErrWin(
 				app,
-				err1,
-				nil,
+				err1.Error(),
 			)
 			return err1
 		}
@@ -63,13 +62,13 @@ func basicChocoCheck(app fyne.App, editedTextChoco string) error {
 
 func basicScoopCheck(app fyne.App, editedTextScoop string) error {
 	if err := checks.CheckOS(); err != nil { // Check the OS
-		windows.ErrWin(app, err, nil)
+		windows.ErrWin(app, err.Error())
 		return err
 	}
 	// Check for nil string values
 	if editedTextScoop == "" || editedTextScoop == "<nil>" {
 		err := errors.New("scoop package list is empty")
-		windows.ErrWin(app, err, nil)
+		windows.ErrWin(app, err.Error())
 		return err
 	}
 	// Check if scoop is installed

@@ -4,6 +4,8 @@ import (
 	"FetchBox/cmd/core"
 	"fmt"
 	"os"
+
+	"github.com/gookit/color"
 )
 
 func Init() {
@@ -26,7 +28,7 @@ func Init() {
 	case "version":
 		fmt.Println(
 			"Windows-package-autoinstaller v"+core.Version,
-			"\nCreated by "+core.Yellow("Angel(Tom5521)")+"\nUnder the "+core.Red("MIT")+" License",
+			"\nCreated by "+color.Yellow.Render("Angel(Tom5521)")+"\nUnder the "+color.Red.Render("MIT")+" License",
 		)
 	case "addCustomBuckets":
 		if len(os.Args) >= 3 {

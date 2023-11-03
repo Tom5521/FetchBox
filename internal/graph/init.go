@@ -33,7 +33,7 @@ func Init() {
 	window.SetMaster()
 
 	// Load the Icons and set the theme
-	icon.SetThemeIcons(app, windows.ErrWin)
+	icon.SetThemeIcons(app)
 
 	window.SetIcon(icon.AppICON)
 

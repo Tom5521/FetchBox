@@ -1,17 +1,24 @@
+/*
+ * Copyright Tom5521(c) - All Rights Reserved.
+ *
+ * This project is licenced under the MIT License.
+ */
+
 package core
 
 import (
 	"FetchBox/pkg/checks"
 	"os"
 
-	"github.com/gookit/color"
+	"github.com/Tom5521/CmdRunTools/command"
 )
 
 var (
 	Version string = "v2.3"
-	Red            = color.FgRed.Render
+	cmd            = command.Cmd{}
+	//Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
-	Yellow         = color.FgYellow.Render
+	//Yellow         = color.FgYellow.Render
 	linuxCH        = checks.CheckOS()
 	ConfigFilename = "FetchBox-conf.yml"
 	sudotype       string

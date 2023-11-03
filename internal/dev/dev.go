@@ -10,7 +10,6 @@ import (
 	"FetchBox/cmd/core"
 	"FetchBox/pkg/checks"
 	icon "FetchBox/pkg/icons"
-	"errors"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -18,7 +17,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, error, fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string, ...string)) {
+func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(fyne.App, string, ...fyne.Window), InstallPkgManagerWin func(fyne.App, string, func() error), InfoWin func(fyne.App, string, ...string)) {
 	// This statement of function is horrendous and fucking hellish, maybe I'll fix it later.
 	window := app.NewWindow("Dev")
 	window.SetIcon(icon.DevICON)
@@ -34,7 +33,7 @@ func DevWindow(app fyne.App, RestartWindow func(fyne.App, string), ErrWin func(f
 		RestartWindow(app, "Dev")
 	})
 	errButtom := widget.NewButton("Custom Error buttom", func() {
-		ErrWin(app, errors.New("Development"), nil)
+		ErrWin(app, "Development", nil)
 	})
 	installpkgmngBT_Scoop := widget.NewButton("Install Scoop pkg manager", func() {
 		InstallPkgManagerWin(app, "Development -Scoop-", core.InstallScoop)

@@ -7,8 +7,6 @@
 package icon
 
 import (
-	"os"
-
 	"fyne.io/fyne/v2"
 )
 
@@ -48,8 +46,9 @@ var (
 	PlaceholderICON fyne.Resource = Placeholder
 )
 
-func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
-	if os.Getenv("FYNE_THEME") == "light" {
+func SetThemeIcons(app fyne.App) {
+	themeVariant := app.Settings().ThemeVariant()
+	if themeVariant == 0 {
 		DevICON = DevICON_Light
 		InstallICON = InstallICON_Light
 		DownloadICON = DownloadICON_Light
@@ -58,7 +57,7 @@ func SetThemeIcons(app fyne.App, errWin func(fyne.App, error, fyne.Window)) {
 		RestartICON = RestartICON_Light
 		InfoICON = InfoICON_Light
 		UninstallICON = UninstallICON_Light
-	} else {
+	} else if themeVariant == 1 {
 		DevICON = DevICON_Dark
 		InstallICON = InstallICON_Dark
 		DownloadICON = DownloadICON_Dark
