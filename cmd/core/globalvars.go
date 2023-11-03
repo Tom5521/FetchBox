@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	Version string = "v2.3"
+	Version string = "v2.3.2"
 	cmd            = command.Cmd{}
 	//Red            = color.FgRed.Render
 	//bgyellow        = color.BgYellow.Render
